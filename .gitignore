@@ -1,0 +1,6 @@
+# ignore build artifacts
+*.o
+raylua
+
+# ignore my test init.lua
+init.lua
