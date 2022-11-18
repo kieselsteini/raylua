@@ -9,7 +9,7 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
 
 ## State
 
-Currently **160** functions are implemented. All *Unload* functions are not implemented as Lua will collect unused objects and recycle the memory itself.
+Currently **167** functions are implemented. All *Unload* functions are not implemented as Lua will collect unused objects and recycle the memory itself.
 
 - module: rcore 🚧
     - Window-related functions ✅ (80%)
@@ -41,7 +41,7 @@ Currently **160** functions are implemented. All *Unload* functions are not impl
 - module: rshapes ✅ (100%)
 - module: rtextures 🚧
     - Image loading functions ❌
-    - Image generation functions ❌
+    - Image generation functions ✅ (100%)
     - Image manipulation functions ❌
     - Image drawing functions ❌
     - Texture loading functions 🚧 (25%)

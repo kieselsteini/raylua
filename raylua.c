@@ -1410,6 +1410,37 @@ static int f_GetCollisionRec(lua_State *L) {
 
 //==[[ module: rtextures ]]=====================================================
 
+// Image generation functions --------------------------------------------------
+
+static int f_GenImageColor(lua_State *L) {
+    return push_Image(L, GenImageColor(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), *check_Color(L, 3)));
+}
+
+static int f_GenImageGradientV(lua_State *L) {
+    return push_Image(L, GenImageGradientV(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), *check_Color(L, 3),  *check_Color(L, 4)));
+}
+
+static int f_GenImageGradientH(lua_State *L) {
+    return push_Image(L, GenImageGradientH(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), *check_Color(L, 3),  *check_Color(L, 4)));
+}
+
+static int f_GenImageGradientRadial(lua_State *L) {
+    return push_Image(L, GenImageGradientRadial(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), (float)luaL_checknumber(L, 3), *check_Color(L, 4), *check_Color(L, 5)));
+}
+
+static int f_GenImageChecked(lua_State *L) {
+    return push_Image(L, GenImageChecked(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), *check_Color(L, 5), *check_Color(L, 6)));
+}
+
+static int f_GenImageWhiteNoise(lua_State *L) {
+    return push_Image(L, GenImageWhiteNoise(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), (float)luaL_checknumber(L, 3)));
+}
+
+static int f_GenImageCellular(lua_State *L) {
+    return push_Image(L, GenImageWhiteNoise(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3)));
+}
+
+
 // Texture loading functions ---------------------------------------------------
 
 static int f_LoadTexture(lua_State *L) {
@@ -1764,6 +1795,14 @@ static const luaL_Reg raylib_funcs[] = {
         { "CheckCollisionPointLine", f_CheckCollisionPointLine },
         { "GetCollisionRec", f_GetCollisionRec },
     // module: rtextures -------------------------------------------------------
+        // Image generation functions ------------------------------------------
+        { "GenImageColor", f_GenImageColor },
+        { "GenImageGradientV", f_GenImageGradientV },
+        { "GenImageGradientH", f_GenImageGradientH },
+        { "GenImageGradientRadial", f_GenImageGradientRadial },
+        { "GenImageChecked", f_GenImageChecked },
+        { "GenImageWhiteNoise", f_GenImageWhiteNoise },
+        { "GenImageCellular", f_GenImageCellular },
         // Texture loading functions -------------------------------------------
         { "LoadTexture", f_LoadTexture },
         // Texture configuration functions -------------------------------------
