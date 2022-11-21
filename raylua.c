@@ -1739,6 +1739,52 @@ static int f_SetTextureWrap(lua_State *L) {
 }
 
 
+// Texture drawing functions ---------------------------------------------------
+
+static int f_DrawTexture(lua_State *L) {
+    DrawTexture(*check_Texture(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_DrawTextureV(lua_State *L) {
+    DrawTextureV(*check_Texture(L, 1), *check_Vector2(L, 2), *check_Color(L, 3));
+    return 0;
+}
+
+static int f_DrawTextureEx(lua_State *L) {
+    DrawTextureEx(*check_Texture(L, 1), *check_Vector2(L, 2), (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4), *check_Color(L, 5));
+    return 0;
+}
+
+static int f_DrawTextureRec(lua_State *L) {
+    DrawTextureRec(*check_Texture(L, 1), *check_Rectangle(L, 2), *check_Vector2(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_DrawTextureQuad(lua_State *L) {
+    DrawTextureQuad(*check_Texture(L, 1), *check_Vector2(L, 2), *check_Vector2(L, 3), *check_Rectangle(L, 4), *check_Color(L, 5));
+    return 0;
+}
+
+static int f_DrawTextureTiled(lua_State *L) {
+    DrawTextureTiled(*check_Texture(L, 1), *check_Rectangle(L, 2), *check_Rectangle(L, 3), *check_Vector2(L, 4), (float)luaL_checknumber(L, 5), (float)luaL_checknumber(L, 6), *check_Color(L, 7));
+    return 0;
+}
+
+static int f_DrawTexturePro(lua_State *L) {
+    DrawTexturePro(*check_Texture(L, 1), *check_Rectangle(L, 2), *check_Rectangle(L, 3), *check_Vector2(L, 4), (float)luaL_checknumber(L, 5), *check_Color(L, 6));
+    return 0;
+}
+
+static int f_DrawTextureNPatch(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_DrawTexturePoly(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+
 //==[[ module: rtext ]]=========================================================
 
 // Font loading/unloading functions --------------------------------------------
@@ -1942,6 +1988,17 @@ static const luaL_Reg Texture_meta[] = {
     { "__index", f_Texture__index },
     { "?width", f_Texture_get_width },
     { "?height", f_Texture_get_height },
+
+    { "Draw", f_DrawTexture },
+    { "DrawV", f_DrawTextureV },
+    { "DrawEx", f_DrawTextureEx },
+    { "DrawRec", f_DrawTextureRec },
+    { "DrawQuad", f_DrawTextureQuad },
+    { "DrawTiled", f_DrawTextureTiled },
+    { "DrawPro", f_DrawTexturePro },
+    { "DrawNPatch", f_DrawTextureNPatch },
+    { "DrawPoly", f_DrawTexturePoly },
+
     { NULL, NULL }
 };
 
@@ -2185,6 +2242,16 @@ static const luaL_Reg raylib_funcs[] = {
         { "GenTextureMipmaps", f_GenTextureMipmaps },
         { "SetTextureFilter", f_SetTextureFilter },
         { "SetTextureWrap", f_SetTextureWrap },
+        // Texture drawing functions -------------------------------------------
+        { "DrawTexture", f_DrawTexture },
+        { "DrawTextureV", f_DrawTextureV },
+        { "DrawTextureEx", f_DrawTextureEx },
+        { "DrawTextureRec", f_DrawTextureRec },
+        { "DrawTextureQuad", f_DrawTextureQuad },
+        { "DrawTextureTiled", f_DrawTextureTiled },
+        { "DrawTexturePro", f_DrawTexturePro },
+        { "DrawTextureNPatch", f_DrawTextureNPatch },
+        { "DrawTexturePoly", f_DrawTexturePoly },
     // module: rtext -----------------------------------------------------------
         // Font loading/unloading functions ------------------------------------
         { "GetFontDefault", f_GetFontDefault },

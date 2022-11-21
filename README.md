@@ -50,7 +50,7 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
         - LoadTextureCubemap ❌
         - LoadRenderTexture ❌
     - Texture configuration functions ✅ (100%)
-    - Texture drawing functions ❌
+    - Texture drawing functions ✅ (100%)
     - Color/pixel related functions 🚧
         - **Fade** is implemeted on the **Color** object
 - module: rtext 🚧
