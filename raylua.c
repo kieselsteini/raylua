@@ -1570,11 +1570,27 @@ static int f_ImageColorReplace(lua_State *L) {
 }
 
 static int f_LoadImageColors(lua_State *L) {
-    return luaL_error(L, "not implemented");
+    const Image *image = check_Image(L, 1);
+    Color *colors = LoadImageColors(*image);
+    lua_createtable(L, image->width * image->height, 0);
+    for (int i = 0; i < image->width * image->height; ++i) {
+        push_Color(L, colors[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    UnloadImageColors(colors);
+    return 1;
 }
 
 static int f_LoadImagePalette(lua_State *L) {
-    return luaL_error(L, "not implemented");
+    int count;
+    Color *colors = LoadImagePalette(*check_Image(L, 1), 256, &count);
+    lua_createtable(L, count, 0);
+    for (int i = 0; i < count; ++i) {
+        push_Color(L, colors[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    UnloadImagePalette(colors);
+    return 1;
 }
 
 static int f_GetImageAlphaBorder(lua_State *L) {
