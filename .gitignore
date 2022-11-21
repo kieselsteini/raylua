@@ -2,5 +2,9 @@
 *.o
 raylua
 
+# ignore codegen artifacts
+x
+raylib.h
+
 # ignore my test init.lua
 init.lua
