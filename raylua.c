@@ -1586,6 +1586,78 @@ static int f_GetImageColor(lua_State *L) {
 }
 
 
+// Image drawing functions -----------------------------------------------------
+
+static int f_ImageClearBackground(lua_State *L) {
+    ImageClearBackground(check_Image(L, 1), *check_Color(L, 2));
+    return 0;
+}
+
+static int f_ImageDrawPixel(lua_State *L) {
+    ImageDrawPixel(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_ImageDrawPixelV(lua_State *L) {
+    ImageDrawPixelV(check_Image(L, 1), *check_Vector2(L, 2), *check_Color(L, 3));
+    return 0;
+}
+
+static int f_ImageDrawLine(lua_State *L) {
+    ImageDrawLine(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5), *check_Color(L, 6));
+    return 0;
+}
+
+static int f_ImageDrawLineV(lua_State *L) {
+    ImageDrawLineV(check_Image(L, 1), *check_Vector2(L, 2), *check_Vector2(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_ImageDrawCircle(lua_State *L) {
+    ImageDrawCircle(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), *check_Color(L, 5));
+    return 0;
+}
+
+static int f_ImageDrawCircleV(lua_State *L) {
+    ImageDrawCircleV(check_Image(L, 1), *check_Vector2(L, 2), (int)luaL_checknumber(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_ImageDrawRectangle(lua_State *L) {
+    ImageDrawRectangle(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5), *check_Color(L, 6));
+    return 0;
+}
+
+static int f_ImageDrawRectangleV(lua_State *L) {
+    ImageDrawRectangleV(check_Image(L, 1), *check_Vector2(L, 2), *check_Vector2(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_ImageDrawRectangleRec(lua_State *L) {
+    ImageDrawRectangleRec(check_Image(L, 1), *check_Rectangle(L, 2), *check_Color(L, 3));
+    return 0;
+}
+
+static int f_ImageDrawRectangleLines(lua_State *L) {
+    ImageDrawRectangleLines(check_Image(L, 1), *check_Rectangle(L, 2), (int)luaL_checknumber(L, 3), *check_Color(L, 4));
+    return 0;
+}
+
+static int f_ImageDraw(lua_State *L) {
+    ImageDraw(check_Image(L, 1), *check_Image(L, 2), *check_Rectangle(L, 3), *check_Rectangle(L, 4), *check_Color(L, 5));
+    return 0;
+}
+
+static int f_ImageDrawText(lua_State *L) {
+    ImageDrawText(check_Image(L, 1), luaL_checkstring(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5), *check_Color(L, 6));
+    return 0;
+}
+
+static int f_ImageDrawTextEx(lua_State *L) {
+    ImageDrawTextEx(check_Image(L, 1), *check_Font(L, 2), luaL_checkstring(L, 3), *check_Vector2(L, 4), (float)luaL_checknumber(L, 5), (float)luaL_checknumber(L, 6), *check_Color(L, 7));
+    return 0;
+}
+
 
 // Texture loading functions ---------------------------------------------------
 
@@ -1757,6 +1829,7 @@ static const luaL_Reg Image_meta[] = {
     { "__tostring", f_Image__tostring },
     { "__gc", f_Image__gc },
     { "__index", f_Image__index },
+
     { "Copy", f_ImageCopy },
     { "FromImage", f_ImageFromImage },
     { "Text", f_ImageText },
@@ -1787,6 +1860,22 @@ static const luaL_Reg Image_meta[] = {
     { "LoadPalette", f_LoadImagePalette },
     { "GetAlphaBorder", f_GetImageAlphaBorder },
     { "GetColor", f_GetImageColor },
+
+    { "ClearBackground", f_ImageClearBackground },
+    { "DrawPixel", f_ImageDrawPixel },
+    { "DrawPixelV", f_ImageDrawPixelV },
+    { "DrawLine", f_ImageDrawLine },
+    { "DrawLineV", f_ImageDrawLineV },
+    { "DrawCircle", f_ImageDrawCircle },
+    { "DrawCircleV", f_ImageDrawCircleV },
+    { "DrawRectangle", f_ImageDrawRectangle },
+    { "DrawRectangleV", f_ImageDrawRectangleV },
+    { "DrawRectangleRec", f_ImageDrawRectangleRec },
+    { "DrawRectangleLines", f_ImageDrawRectangleLines },
+    { "Draw", f_ImageDraw },
+    { "DrawText", f_ImageDrawText },
+    { "DrawTextEx", f_ImageDrawTextEx },
+
     { NULL, NULL }
 };
 
@@ -2010,6 +2099,21 @@ static const luaL_Reg raylib_funcs[] = {
         { "LoadImagePalette", f_LoadImagePalette },
         { "GetImageAlphaBorder", f_GetImageAlphaBorder },
         { "GetImageColor", f_GetImageColor },
+        // Image drawing functions ---------------------------------------------
+        { "ImageClearBackground", f_ImageClearBackground },
+        { "ImageDrawPixel", f_ImageDrawPixel },
+        { "ImageDrawPixelV", f_ImageDrawPixelV },
+        { "ImageDrawLine", f_ImageDrawLine },
+        { "ImageDrawLineV", f_ImageDrawLineV },
+        { "ImageDrawCircle", f_ImageDrawCircle },
+        { "ImageDrawCircleV", f_ImageDrawCircleV },
+        { "ImageDrawRectangle", f_ImageDrawRectangle },
+        { "ImageDrawRectangleV", f_ImageDrawRectangleV },
+        { "ImageDrawRectangleRec", f_ImageDrawRectangleRec },
+        { "ImageDrawRectangleLines", f_ImageDrawRectangleLines },
+        { "ImageDraw", f_ImageDraw },
+        { "ImageDrawText", f_ImageDrawText },
+        { "ImageDrawTextEx", f_ImageDrawTextEx },
         // Texture loading functions -------------------------------------------
         { "LoadTexture", f_LoadTexture },
         // Texture configuration functions -------------------------------------
