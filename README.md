@@ -43,7 +43,7 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
     - Image loading functions ❌
     - Image generation functions ✅ (100%)
     - Image manipulation functions ✅ (100%)
-    - Image drawing functions ❌
+    - Image drawing functions ✅ (100%)
     - Texture loading functions 🚧 (25%)
         - LoadTextureFromImage ❌
         - LoadTextureCubemap ❌
