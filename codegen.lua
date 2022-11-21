@@ -74,7 +74,7 @@ function parse_function(line)
             else
                 ret_body = '    return luaL_error(L, "not implemented");'
             end
-            return string.format(templates.body, name, ret_body), string.format('    { "%s", f_%s },', name, name)
+            return string.format(templates.body, name, ret_body), string.format('        { "%s", f_%s },', name, name)
         end
     end
 end
@@ -102,6 +102,13 @@ function parse_code()
             --c_code[#c_code + 1] = string.format(templates.setter, name, field_name, setter)
             c_defs[#c_defs + 1] = string.format('    { "?%s", f_%s_get_%s },', field_name, name, field_name)
             --c_defs[#c_defs + 1] = string.format('    { "=%s", f_%s_set_%s },', field_name, name, field_name)
+        end
+    end
+
+    -- parse enums
+    for enums in string.gmatch(raylib, 'typedef enum {([^}]+)}') do
+        for name in string.gmatch(enums, '([^%s,/]+).-\n') do
+            c_defs[#c_defs + 1] = string.format('    { "%s", %s },', name, name)
         end
     end
 
