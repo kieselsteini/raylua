@@ -2005,6 +2005,12 @@ static const luaL_Reg Texture_meta[] = {
 static const luaL_Reg Font_meta[] = {
     { "__tostring", f_Font__tostring },
     { "__gc", f_Font__gc },
+
+    { "DrawEx", f_DrawTextEx },
+    { "DrawPro", f_DrawTextPro },
+    { "DrawCodepoint", f_DrawTextCodepoint },
+    { "Measure", f_MeasureTextEx },
+
     { NULL, NULL }
 };
 
