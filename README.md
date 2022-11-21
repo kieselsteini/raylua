@@ -94,7 +94,7 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
     - **GlyphInfo** ❌
     - **Font** 🚧
         - just started with implementation
-    - **Camera** ❌
+    - **Camera3D** ✅
     - **Camera2D** ❌
     - **Mesh** ❌
     - **Shader** ❌

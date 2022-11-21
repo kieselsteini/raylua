@@ -641,6 +641,13 @@ static int f_Camera3D(lua_State *L) {
     switch (lua_gettop(L)) {
         case 0: return push_Camera3D(L, (Camera3D){});
         case 1: return push_Camera3D(L, *check_Camera3D(L, 1));
+        case 5: return push_Camera3D(L, (Camera3D){
+            .position = *check_Vector3(L, 1),
+            .target = *check_Vector3(L, 2),
+            .up = *check_Vector3(L, 3),
+            .fovy = (float)luaL_checknumber(L, 4),
+            .projection = luaL_checkinteger(L, 5)
+        });
         default: return luaL_error(L, "wrong number of arguments");
     }
 }
@@ -657,6 +664,53 @@ static int f_Camera3D__index(lua_State *L) {
 
 static int f_Camera3D__newindex(lua_State *L) {
     return push_newindex(L, "Camera3D");
+}
+
+static int f_Camera3D_get_position(lua_State *L) {
+    return push_Vector3_Ref(L, &check_Camera3D(L, 1)->position);
+}
+
+static int f_Camera3D_set_position(lua_State *L) {
+    check_Camera3D(L, 1)->position = *check_Vector3(L, 2);
+    return 0;
+}
+
+static int f_Camera3D_get_target(lua_State *L) {
+    return push_Vector3_Ref(L, &check_Camera3D(L, 1)->target);
+}
+
+static int f_Camera3D_set_target(lua_State *L) {
+    check_Camera3D(L, 1)->target = *check_Vector3(L, 2);
+    return 0;
+}
+
+static int f_Camera3D_get_up(lua_State *L) {
+    return push_Vector3_Ref(L, &check_Camera3D(L, 1)->up);
+}
+
+static int f_Camera3D_set_up(lua_State *L) {
+    check_Camera3D(L, 1)->up = *check_Vector3(L, 2);
+    return 0;
+}
+
+static int f_Camera3D_get_fovy(lua_State *L) {
+     lua_pushnumber(L, check_Camera3D(L, 1)->fovy);
+     return 1;
+}
+
+static int f_Camera3D_set_fovy(lua_State *L) {
+    check_Camera3D(L, 1)->fovy = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int f_Camera3D_get_projection(lua_State *L) {
+     lua_pushinteger(L, check_Camera3D(L, 1)->projection);
+     return 1;
+}
+
+static int f_Camera3D_set_projection(lua_State *L) {
+    check_Camera3D(L, 1)->projection = luaL_checkinteger(L, 2);
+    return 0;
 }
 
 
@@ -2074,6 +2128,16 @@ static const luaL_Reg Camera3D_meta[] = {
     { "__tostring", f_Camera3D__tostring },
     { "__index", f_Camera3D__index },
     { "__newindex", f_Camera3D__newindex },
+    { "?position", f_Camera3D_get_position },
+    { "=position", f_Camera3D_set_position },
+    { "?target", f_Camera3D_get_target },
+    { "=target", f_Camera3D_set_target },
+    { "?up", f_Camera3D_get_up },
+    { "=up", f_Camera3D_set_up },
+    { "?fovy", f_Camera3D_get_fovy },
+    { "=fovy", f_Camera3D_set_fovy },
+    { "?projection", f_Camera3D_get_projection },
+    { "=projection", f_Camera3D_set_projection },
     { NULL, NULL }
 };
 
