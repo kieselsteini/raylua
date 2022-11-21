@@ -9,8 +9,6 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
 
 ## State
 
-Currently **167** functions are implemented. All *Unload* functions are not implemented as Lua will collect unused objects and recycle the memory itself.
-
 - module: rcore 🚧
     - Window-related functions ✅ (80%)
         - GetWindowHandle ❌ (useless in Lua)
@@ -19,9 +17,7 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
         - all monitor functions missing!!!
     - Custom frame control functions ✅ (100%)
     - Cursor-related functions ✅ (100%)
-    - Drawing-related functions 🚧 (41%)
-        - BeginMode2D / EndMode2D ❌
-        - BeginMode3D / EndMode3D ❌
+    - Drawing-related functions 🚧 (64%)
         - BeginTextureMode / EndTextureMode ❌
         - BeginShaderMode / EndShaderMode ❌
         - BeginVrStereoMode / EndVrStereoMode ❌

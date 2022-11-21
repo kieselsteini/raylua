@@ -1012,6 +1012,26 @@ static int f_EndDrawing(lua_State *L) {
     return 0;
 }
 
+static int f_BeginMode2D(lua_State *L) {
+    BeginMode2D(*check_Camera2D(L, 1));
+    return 0;
+}
+
+static int f_EndMode2D(lua_State *L) {
+    (void)L; EndMode2D();
+    return 0;
+}
+
+static int f_BeginMode3D(lua_State *L) {
+    BeginMode3D(*check_Camera3D(L, 1));
+    return 0;
+}
+
+static int f_EndMode3D(lua_State *L) {
+    (void)L; EndMode3D();
+    return 0;
+}
+
 static int f_BeginBlendMode(lua_State *L) {
     BeginBlendMode(luaL_checkinteger(L, 1));
     return 0;
@@ -2286,6 +2306,10 @@ static const luaL_Reg raylib_funcs[] = {
         { "ClearBackground", f_ClearBackground },
         { "BeginDrawing", f_BeginDrawing },
         { "EndDrawing", f_EndDrawing },
+        { "BeginMode2D", f_BeginMode2D },
+        { "EndMode2D", f_EndMode2D },
+        { "BeginMode3D", f_BeginMode3D },
+        { "EndMode3D", f_EndMode3D },
         { "BeginBlendMode", f_BeginBlendMode },
         { "EndBlendMode", f_EndBlendMode },
         { "BeginScissorMode", f_BeginScissorMode },
