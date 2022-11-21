@@ -1410,6 +1410,44 @@ static int f_GetCollisionRec(lua_State *L) {
 
 //==[[ module: rtextures ]]=====================================================
 
+// Image loading functions -----------------------------------------------------
+
+static int f_LoadImage(lua_State *L) {
+    return push_Image(L, LoadImage(luaL_checkstring(L, 1)));
+}
+
+static int f_LoadImageRaw(lua_State *L) {
+    return push_Image(L, LoadImageRaw(luaL_checkstring(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5)));
+}
+
+static int f_LoadImageAnim(lua_State *L) {
+    int frames;
+    Image image = LoadImageAnim(luaL_checkstring(L, 1), &frames);
+    push_Image(L, image);
+    lua_pushinteger(L, frames);
+    return 2;
+}
+
+static int f_LoadImageFromString(lua_State *L) {
+    size_t length;
+    const char *type = luaL_checkstring(L, 1);
+    const char *data = luaL_checklstring(L, 2, &length);
+    return push_Image(L, LoadImageFromMemory(type, (const unsigned char*)data, (int)length));
+}
+
+static int f_LoadImageFromTexture(lua_State *L) {
+    return push_Image(L, LoadImageFromTexture(*check_Texture(L, 1)));
+}
+
+static int f_LoadImageFromScreen(lua_State *L) {
+    return push_Image(L, LoadImageFromScreen());
+}
+
+static int f_ExportImage(lua_State *L) {
+     return lua_pushboolean(L, ExportImage(*check_Image(L, 1), luaL_checkstring(L, 2)));
+}
+
+
 // Image generation functions --------------------------------------------------
 
 static int f_GenImageColor(lua_State *L) {
@@ -1846,6 +1884,8 @@ static const luaL_Reg Image_meta[] = {
     { "__gc", f_Image__gc },
     { "__index", f_Image__index },
 
+    { "Export", f_ExportImage },
+
     { "Copy", f_ImageCopy },
     { "FromImage", f_ImageFromImage },
     { "Text", f_ImageText },
@@ -2076,6 +2116,14 @@ static const luaL_Reg raylib_funcs[] = {
         { "CheckCollisionPointLine", f_CheckCollisionPointLine },
         { "GetCollisionRec", f_GetCollisionRec },
     // module: rtextures -------------------------------------------------------
+        // Image loading functions ---------------------------------------------
+        { "LoadImage", f_LoadImage },
+        { "LoadImageRaw", f_LoadImageRaw },
+        { "LoadImageAnim", f_LoadImageAnim },
+        { "LoadImageFromString", f_LoadImageFromString },
+        { "LoadImageFromTexture", f_LoadImageFromTexture },
+        { "LoadImageFromScreen", f_LoadImageFromScreen },
+        { "ExportImage", f_ExportImage },
         // Image generation functions ------------------------------------------
         { "GenImageColor", f_GenImageColor },
         { "GenImageGradientV", f_GenImageGradientV },

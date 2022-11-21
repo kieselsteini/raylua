@@ -40,7 +40,8 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
 - module: rcamera ❌
 - module: rshapes ✅ (100%)
 - module: rtextures 🚧
-    - Image loading functions ❌
+    - Image loading functions ✅ (100%)
+        - LoadImageFromMemory 🌔 **LoadImageFromString**
     - Image generation functions ✅ (100%)
     - Image manipulation functions ✅ (100%)
     - Image drawing functions ✅ (100%)
