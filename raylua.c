@@ -1441,6 +1441,152 @@ static int f_GenImageCellular(lua_State *L) {
 }
 
 
+// Image manipulation functions ------------------------------------------------
+
+static int f_ImageCopy(lua_State *L) {
+    return push_Image(L, ImageCopy(*check_Image(L, 1)));
+}
+
+static int f_ImageFromImage(lua_State *L) {
+    return push_Image(L, ImageFromImage(*check_Image(L, 1), *check_Rectangle(L, 2)));
+}
+
+static int f_ImageText(lua_State *L) {
+    return push_Image(L, ImageText(luaL_checkstring(L, 1), (int)luaL_checknumber(L, 2), *check_Color(L, 3)));
+}
+
+static int f_ImageTextEx(lua_State *L) {
+    return push_Image(L, ImageTextEx(*check_Font(L, 1), luaL_checkstring(L, 2), (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4), *check_Color(L, 5)));
+}
+
+static int f_ImageFormat(lua_State *L) {
+    ImageFormat(check_Image(L, 1), (int)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_ImageToPOT(lua_State *L) {
+    ImageToPOT(check_Image(L, 1), *check_Color(L, 2));
+    return 0;
+}
+
+static int f_ImageCrop(lua_State *L) {
+    ImageCrop(check_Image(L, 1), *check_Rectangle(L, 2));
+    return 0;
+}
+
+static int f_ImageAlphaCrop(lua_State *L) {
+    ImageAlphaCrop(check_Image(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_ImageAlphaClear(lua_State *L) {
+    ImageAlphaClear(check_Image(L, 1), *check_Color(L, 2), (float)luaL_checknumber(L, 3));
+    return 0;
+}
+
+static int f_ImageAlphaMask(lua_State *L) {
+    ImageAlphaMask(check_Image(L, 1), *check_Image(L, 2));
+    return 0;
+}
+
+static int f_ImageAlphaPremultiply(lua_State *L) {
+    ImageAlphaPremultiply(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageResize(lua_State *L) {
+    ImageResize(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3));
+    return 0;
+}
+
+static int f_ImageResizeNN(lua_State *L) {
+    ImageResizeNN(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3));
+    return 0;
+}
+
+static int f_ImageResizeCanvas(lua_State *L) {
+    ImageResizeCanvas(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5), *check_Color(L, 6));
+    return 0;
+}
+
+static int f_ImageMipmaps(lua_State *L) {
+    ImageMipmaps(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageDither(lua_State *L) {
+    ImageDither(check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3), (int)luaL_checknumber(L, 4), (int)luaL_checknumber(L, 5));
+    return 0;
+}
+
+static int f_ImageFlipVertical(lua_State *L) {
+    ImageFlipVertical(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageFlipHorizontal(lua_State *L) {
+    ImageFlipHorizontal(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageRotateCW(lua_State *L) {
+    ImageRotateCW(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageRotateCCW(lua_State *L) {
+    ImageRotateCCW(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageColorTint(lua_State *L) {
+    ImageColorTint(check_Image(L, 1), *check_Color(L, 2));
+    return 0;
+}
+
+static int f_ImageColorInvert(lua_State *L) {
+    ImageColorInvert(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageColorGrayscale(lua_State *L) {
+    ImageColorGrayscale(check_Image(L, 1));
+    return 0;
+}
+
+static int f_ImageColorContrast(lua_State *L) {
+    ImageColorContrast(check_Image(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_ImageColorBrightness(lua_State *L) {
+    ImageColorBrightness(check_Image(L, 1), (int)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_ImageColorReplace(lua_State *L) {
+    ImageColorReplace(check_Image(L, 1), *check_Color(L, 2), *check_Color(L, 3));
+    return 0;
+}
+
+static int f_LoadImageColors(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_LoadImagePalette(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_GetImageAlphaBorder(lua_State *L) {
+    return push_Rectangle(L, GetImageAlphaBorder(*check_Image(L, 1), (float)luaL_checknumber(L, 2)));
+}
+
+static int f_GetImageColor(lua_State *L) {
+    return push_Color(L, GetImageColor(*check_Image(L, 1), (int)luaL_checknumber(L, 2), (int)luaL_checknumber(L, 3)));
+}
+
+
+
 // Texture loading functions ---------------------------------------------------
 
 static int f_LoadTexture(lua_State *L) {
@@ -1611,6 +1757,36 @@ static const luaL_Reg Image_meta[] = {
     { "__tostring", f_Image__tostring },
     { "__gc", f_Image__gc },
     { "__index", f_Image__index },
+    { "Copy", f_ImageCopy },
+    { "FromImage", f_ImageFromImage },
+    { "Text", f_ImageText },
+    { "TextEx", f_ImageTextEx },
+    { "Format", f_ImageFormat },
+    { "ToPOT", f_ImageToPOT },
+    { "Crop", f_ImageCrop },
+    { "AlphaCrop", f_ImageAlphaCrop },
+    { "AlphaClear", f_ImageAlphaClear },
+    { "AlphaMask", f_ImageAlphaMask },
+    { "AlphaPremultiply", f_ImageAlphaPremultiply },
+    { "Resize", f_ImageResize },
+    { "ResizeNN", f_ImageResizeNN },
+    { "ResizeCanvas", f_ImageResizeCanvas },
+    { "Mipmaps", f_ImageMipmaps },
+    { "Dither", f_ImageDither },
+    { "FlipVertical", f_ImageFlipVertical },
+    { "FlipHorizontal", f_ImageFlipHorizontal },
+    { "RotateCW", f_ImageRotateCW },
+    { "RotateCCW", f_ImageRotateCCW },
+    { "ColorTint", f_ImageColorTint },
+    { "ColorInvert", f_ImageColorInvert },
+    { "ColorGrayscale", f_ImageColorGrayscale },
+    { "ColorContrast", f_ImageColorContrast },
+    { "ColorBrightness", f_ImageColorBrightness },
+    { "ColorReplace", f_ImageColorReplace },
+    { "LoadColors", f_LoadImageColors },
+    { "LoadPalette", f_LoadImagePalette },
+    { "GetAlphaBorder", f_GetImageAlphaBorder },
+    { "GetColor", f_GetImageColor },
     { NULL, NULL }
 };
 
@@ -1803,6 +1979,37 @@ static const luaL_Reg raylib_funcs[] = {
         { "GenImageChecked", f_GenImageChecked },
         { "GenImageWhiteNoise", f_GenImageWhiteNoise },
         { "GenImageCellular", f_GenImageCellular },
+        // Image manipulation functions ----------------------------------------
+        { "ImageCopy", f_ImageCopy },
+        { "ImageFromImage", f_ImageFromImage },
+        { "ImageText", f_ImageText },
+        { "ImageTextEx", f_ImageTextEx },
+        { "ImageFormat", f_ImageFormat },
+        { "ImageToPOT", f_ImageToPOT },
+        { "ImageCrop", f_ImageCrop },
+        { "ImageAlphaCrop", f_ImageAlphaCrop },
+        { "ImageAlphaClear", f_ImageAlphaClear },
+        { "ImageAlphaMask", f_ImageAlphaMask },
+        { "ImageAlphaPremultiply", f_ImageAlphaPremultiply },
+        { "ImageResize", f_ImageResize },
+        { "ImageResizeNN", f_ImageResizeNN },
+        { "ImageResizeCanvas", f_ImageResizeCanvas },
+        { "ImageMipmaps", f_ImageMipmaps },
+        { "ImageDither", f_ImageDither },
+        { "ImageFlipVertical", f_ImageFlipVertical },
+        { "ImageFlipHorizontal", f_ImageFlipHorizontal },
+        { "ImageRotateCW", f_ImageRotateCW },
+        { "ImageRotateCCW", f_ImageRotateCCW },
+        { "ImageColorTint", f_ImageColorTint },
+        { "ImageColorInvert", f_ImageColorInvert },
+        { "ImageColorGrayscale", f_ImageColorGrayscale },
+        { "ImageColorContrast", f_ImageColorContrast },
+        { "ImageColorBrightness", f_ImageColorBrightness },
+        { "ImageColorReplace", f_ImageColorReplace },
+        { "LoadImageColors", f_LoadImageColors },
+        { "LoadImagePalette", f_LoadImagePalette },
+        { "GetImageAlphaBorder", f_GetImageAlphaBorder },
+        { "GetImageColor", f_GetImageColor },
         // Texture loading functions -------------------------------------------
         { "LoadTexture", f_LoadTexture },
         // Texture configuration functions -------------------------------------

@@ -42,7 +42,7 @@ Currently **167** functions are implemented. All *Unload* functions are not impl
 - module: rtextures 🚧
     - Image loading functions ❌
     - Image generation functions ✅ (100%)
-    - Image manipulation functions ❌
+    - Image manipulation functions ✅ (100%)
     - Image drawing functions ❌
     - Texture loading functions 🚧 (25%)
         - LoadTextureFromImage ❌
