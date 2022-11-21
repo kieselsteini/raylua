@@ -10,11 +10,12 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
 ## State
 
 - module: rcore 🚧
-    - Window-related functions ✅ (80%)
+    - Window-related functions ✅ (100%)
         - GetWindowHandle ❌ (useless in Lua)
         - GetScreenWidth / GetScreenHeight 🌔 **GetScreenSize**
         - GetRenderWidth / GetRenderHeight 🌔 **GetRenderSize**
-        - all monitor functions missing!!!
+        - GetMonitorWidth / GetMonitorHeight 🌔 **GetMonitorSize**
+        - GetMonitorPhysicalWidth / GetMonitorPhysicalHeight 🌔 **GetMonitorPhysicalSize**
     - Custom frame control functions ✅ (100%)
     - Cursor-related functions ✅ (100%)
     - Drawing-related functions 🚧 (64%)

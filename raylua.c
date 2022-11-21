@@ -1026,6 +1026,47 @@ static int f_GetRenderSize(lua_State *L) {
     return 2;
 }
 
+static int f_GetMonitorCount(lua_State *L) {
+    lua_pushinteger(L, GetMonitorCount());
+    return 1;
+}
+
+static int f_GetCurrentMonitor(lua_State *L) {
+     lua_pushinteger(L, GetCurrentMonitor());
+     return 1;
+}
+
+static int f_GetMonitorPosition(lua_State *L) {
+    return push_Vector2(L, GetMonitorPosition(luaL_checkinteger(L, 1)));
+}
+
+static int f_GetMonitorSize(lua_State *L) {
+    int idx = luaL_checkinteger(L, 1);
+    lua_pushinteger(L, GetMonitorWidth(idx));
+    lua_pushinteger(L, GetMonitorHeight(idx));
+    return 2;
+}
+
+static int f_GetMonitorPhysicalSize(lua_State *L) {
+    int idx = luaL_checkinteger(L, 1);
+    lua_pushinteger(L, GetMonitorPhysicalWidth(idx));
+    lua_pushinteger(L, GetMonitorPhysicalHeight(idx));
+    return 2;
+}
+
+static int f_GetMonitorRefreshRate(lua_State *L) {
+    lua_pushinteger(L, GetMonitorRefreshRate(luaL_checkinteger(L, 1)));
+    return 1;
+}
+
+static int f_GetWindowPosition(lua_State *L) {
+    return push_Vector2(L, GetWindowPosition());
+}
+
+static int f_GetWindowScaleDPI(lua_State *L) {
+    return push_Vector2(L, GetWindowScaleDPI());
+}
+
 static int f_SetClipboardText(lua_State *L) {
     SetClipboardText(luaL_checkstring(L, 1));
     return 0;
@@ -1034,6 +1075,16 @@ static int f_SetClipboardText(lua_State *L) {
 static int f_GetClipboardText(lua_State *L) {
     lua_pushstring(L, GetClipboardText());
     return 1;
+}
+
+static int f_EnableEventWaiting(lua_State *L) {
+    (void)L; EnableEventWaiting();
+    return 0;
+}
+
+static int f_DisableEventWaiting(lua_State *L) {
+    (void)L; DisableEventWaiting();
+    return 0;
 }
 
 
@@ -2261,7 +2312,7 @@ static int f_CloseAudioDevice(lua_State *L) {
 }
 
 static int f_IsAudioDeviceReady(lua_State *L) {
-     lua_pushboolean(L, IsAudioDeviceReady());
+    lua_pushboolean(L, IsAudioDeviceReady());
     return 1;
 }
 
@@ -2453,13 +2504,13 @@ static int f_SetMusicPan(lua_State *L) {
 }
 
 static int f_GetMusicTimeLength(lua_State *L) {
-     lua_pushnumber(L, GetMusicTimeLength(*check_Music(L, 1)));
-     return 1;
+    lua_pushnumber(L, GetMusicTimeLength(*check_Music(L, 1)));
+    return 1;
 }
 
 static int f_GetMusicTimePlayed(lua_State *L) {
-     lua_pushnumber(L, GetMusicTimePlayed(*check_Music(L, 1)));
-     return 1;
+    lua_pushnumber(L, GetMusicTimePlayed(*check_Music(L, 1)));
+    return 1;
 }
 
 
@@ -2740,8 +2791,18 @@ static const luaL_Reg raylib_funcs[] = {
         { "SetWindowOpacity", f_SetWindowOpacity },
         { "GetScreenSize", f_GetScreenSize },
         { "GetRenderSize", f_GetRenderSize },
+        { "GetMonitorCount", f_GetMonitorCount },
+        { "GetCurrentMonitor", f_GetCurrentMonitor },
+        { "GetMonitorPosition", f_GetMonitorPosition },
+        { "GetMonitorSize", f_GetMonitorSize },
+        { "GetMonitorPhysicalSize", f_GetMonitorPhysicalSize },
+        { "GetMonitorRefreshRate", f_GetMonitorRefreshRate },
+        { "GetWindowPosition", f_GetWindowPosition },
+        { "GetWindowScaleDPI", f_GetWindowScaleDPI },
         { "SetClipboardText", f_SetClipboardText },
         { "GetClipboardText", f_GetClipboardText },
+        { "EnableEventWaiting", f_EnableEventWaiting },
+        { "DisableEventWaiting", f_DisableEventWaiting },
         // Custom frame control functions
         { "SwapScreenBuffer", f_SwapScreenBuffer },
         { "PollInputEvents", f_PollInputEvents },
