@@ -106,11 +106,22 @@ static int push_Vector2(lua_State *L, const Vector2 vector) {
     return 1;
 }
 
+static int push_Vector2_Ref(lua_State *L, Vector2 *vector) {
+    *((Vector2**)push_object(L, "Vector2*", sizeof(Vector2*), 1)) = vector;
+    lua_pushvalue(L, 1);
+    lua_setiuservalue(L, -2, 1);
+    return 1;
+}
+
 static Vector2 *check_Vector2(lua_State *L, const int idx) {
+    Vector2 **ref = luaL_testudata(L, idx, "Vector2*");
+    if (ref != NULL) return *ref;
     return luaL_checkudata(L, idx, "Vector2");
 }
 
 static Vector2 *test_Vector2(lua_State *L, const int idx) {
+    Vector2 **ref = luaL_testudata(L, idx, "Vector2*");
+    if (ref != NULL) return *ref;
     return luaL_testudata(L, idx, "Vector2");
 }
 
@@ -230,11 +241,22 @@ static int push_Vector3(lua_State *L, const Vector3 vector) {
     return 1;
 }
 
+static int push_Vector3_Ref(lua_State *L, Vector3 *vector) {
+    *((Vector3**)push_object(L, "Vector3*", sizeof(Vector3*), 1)) = vector;
+    lua_pushvalue(L, 1);
+    lua_setiuservalue(L, -2, 1);
+    return 1;
+}
+
 static Vector3 *check_Vector3(lua_State *L, const int idx) {
+    Vector3 **ref = luaL_testudata(L, idx, "Vector3*");
+    if (ref != NULL) return *ref;
     return luaL_checkudata(L, idx, "Vector3");
 }
 
 static Vector3 *test_Vector3(lua_State *L, const int idx) {
+    Vector3 **ref = luaL_testudata(L, idx, "Vector3*");
+    if (ref != NULL) return *ref;
     return luaL_testudata(L, idx, "Vector3");
 }
 
@@ -604,7 +626,41 @@ static int f_Font__gc(lua_State *L) {
 }
 
 
-//==[[ Color object ]]==========================================================
+//==[[ Camera3D object ]]=======================================================
+
+static int push_Camera3D(lua_State *L, const Camera3D camera) {
+    *((Camera3D*)push_object(L, "Camera3D", sizeof(Camera3D), 0)) = camera;
+    return 1;
+}
+
+static Camera3D *check_Camera3D(lua_State *L, const int idx) {
+    return luaL_checkudata(L, idx, "Camera3D");
+}
+
+static int f_Camera3D(lua_State *L) {
+    switch (lua_gettop(L)) {
+        case 0: return push_Camera3D(L, (Camera3D){});
+        case 1: return push_Camera3D(L, *check_Camera3D(L, 1));
+        default: return luaL_error(L, "wrong number of arguments");
+    }
+}
+
+static int f_Camera3D__tostring(lua_State *L) {
+    const Camera3D *camera = check_Camera3D(L, 1);
+    lua_pushfstring(L, "Camera3D(%p)", camera);
+    return 1;
+}
+
+static int f_Camera3D__index(lua_State *L) {
+    return push_index(L, "Camera3D");
+}
+
+static int f_Camera3D__newindex(lua_State *L) {
+    return push_newindex(L, "Camera3D");
+}
+
+
+//==[[ FilePathList object ]]===================================================
 
 static int push_FilePathList(lua_State *L, FilePathList list, void (*unload)(FilePathList)) {
     lua_createtable(L, list.count, 0);
@@ -2014,12 +2070,20 @@ static const luaL_Reg Font_meta[] = {
     { NULL, NULL }
 };
 
+static const luaL_Reg Camera3D_meta[] = {
+    { "__tostring", f_Camera3D__tostring },
+    { "__index", f_Camera3D__index },
+    { "__newindex", f_Camera3D__newindex },
+    { NULL, NULL }
+};
+
 static const luaL_Reg raylib_funcs[] = {
     // Object creation ---------------------------------------------------------
     { "Vector2", f_Vector2 },
     { "Vector3", f_Vector3 },
     { "Color", f_Color },
     { "Rectangle", f_Rectangle },
+    { "Camera3D", f_Camera3D },
     // module: core ------------------------------------------------------------
         // Window-related functions
         { "InitWindow", f_InitWindow },
@@ -2468,13 +2532,14 @@ static const struct {
 
 static void InitRayLua(lua_State *L) {
     // push object metatables
-    push_meta(L, "Vector2", Vector2_meta);
-    push_meta(L, "Vector3", Vector3_meta);
+    push_meta(L, "Vector2", Vector2_meta); push_meta(L, "Vector2*", Vector2_meta);
+    push_meta(L, "Vector3", Vector3_meta); push_meta(L, "Vector3*", Vector3_meta);
     push_meta(L, "Color", Color_meta);
     push_meta(L, "Rectangle", Rectangle_meta);
     push_meta(L, "Image", Image_meta);
     push_meta(L, "Texture", Texture_meta);
     push_meta(L, "Font", Font_meta);
+    push_meta(L, "Camera3D", Camera3D_meta);
     // register our functions
     lua_pushglobaltable(L);
     luaL_setfuncs(L, raylib_funcs, 0);
