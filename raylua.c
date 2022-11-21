@@ -2514,6 +2514,292 @@ static int f_GetMusicTimePlayed(lua_State *L) {
     return 1;
 }
 
+//==[[ raygui ]]================================================================
+
+// Global gui state control functions ------------------------------------------
+
+static int f_GuiEnable(lua_State *L) {
+    (void)L; GuiEnable();
+    return 0;
+}
+
+static int f_GuiDisable(lua_State *L) {
+    (void)L; GuiDisable();
+    return 0;
+}
+
+static int f_GuiLock(lua_State *L) {
+    (void)L; GuiLock();
+    return 0;
+}
+
+static int f_GuiUnlock(lua_State *L) {
+    (void)L; GuiUnlock();
+    return 0;
+}
+
+static int f_GuiIsLocked(lua_State *L) {
+    lua_pushboolean(L, GuiIsLocked());
+    return 1;
+}
+
+static int f_GuiFade(lua_State *L) {
+    GuiFade((float)luaL_checknumber(L, 1));
+    return 0;
+}
+
+static int f_GuiSetState(lua_State *L) {
+    GuiSetState(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_GuiGetState(lua_State *L) {
+    lua_pushinteger(L, GuiGetState());
+     return 1;
+}
+
+
+// Font set/get functions ------------------------------------------------------
+
+static int f_GuiSetFont(lua_State *L) {
+    GuiSetFont(*check_Font(L, 1));
+    return 0;
+}
+
+static int f_GuiGetFont(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+
+// Style set/get functions -----------------------------------------------------
+
+static int f_GuiSetStyle(lua_State *L) {
+    GuiSetStyle(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int f_GuiGetStyle(lua_State *L) {
+    lua_pushinteger(L, GuiGetStyle(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2)));
+     return 1;
+}
+
+
+// Container/separator controls, useful for controls organization --------------
+
+static int f_GuiWindowBox(lua_State *L) {
+    lua_pushboolean(L, GuiWindowBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
+static int f_GuiGroupBox(lua_State *L) {
+    GuiGroupBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiLine(lua_State *L) {
+    GuiLine(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiPanel(lua_State *L) {
+    GuiPanel(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiScrollPanel(lua_State *L) {
+    return push_Rectangle(L, GuiScrollPanel(*check_Rectangle(L, 1), luaL_checkstring(L, 2), *check_Rectangle(L, 3), check_Vector2(L, 4)));
+}
+
+
+// Basic controls set ----------------------------------------------------------
+
+static int f_GuiLabel(lua_State *L) {
+    GuiLabel(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiButton(lua_State *L) {
+    lua_pushboolean(L, GuiButton(*check_Rectangle(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
+static int f_GuiLabelButton(lua_State *L) {
+    lua_pushboolean(L, GuiLabelButton(*check_Rectangle(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
+static int f_GuiToggle(lua_State *L) {
+    lua_pushboolean(L, GuiToggle(*check_Rectangle(L, 1), luaL_checkstring(L, 2), lua_toboolean(L, 3)));
+    return 1;
+}
+
+static int f_GuiToggleGroup(lua_State *L) {
+    lua_pushinteger(L, GuiToggleGroup(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkinteger(L, 3)));
+     return 1;
+}
+
+static int f_GuiCheckBox(lua_State *L) {
+    lua_pushboolean(L, GuiCheckBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2), lua_toboolean(L, 3)));
+    return 1;
+}
+
+static int f_GuiComboBox(lua_State *L) {
+    lua_pushinteger(L, GuiComboBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkinteger(L, 3)));
+     return 1;
+}
+
+static int f_GuiDropdownBox(lua_State *L) {
+    int active = luaL_checkinteger(L, 3);
+    lua_pushboolean(L, GuiDropdownBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2), &active, lua_toboolean(L, 4)));
+    lua_pushinteger(L, active);
+    return 2;
+}
+
+static int f_GuiSpinner(lua_State *L) {
+    int value = luaL_checkinteger(L, 3);
+    lua_pushboolean(L, GuiSpinner(*check_Rectangle(L, 1), luaL_checkstring(L, 2), &value, luaL_checkinteger(L, 4), luaL_checkinteger(L, 5), lua_toboolean(L, 6)));
+    lua_pushinteger(L, value);
+    return 2;
+}
+
+static int f_GuiValueBox(lua_State *L) {
+    int value = luaL_checkinteger(L, 3);
+    lua_pushboolean(L, GuiValueBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2), &value, luaL_checkinteger(L, 4), luaL_checkinteger(L, 5), lua_toboolean(L, 6)));
+    lua_pushinteger(L, value);
+    return 2;
+}
+
+static int f_GuiTextBox(lua_State *L) {
+    char text[1024]; size_t i;
+    const char *input = luaL_checkstring(L, 2);
+    for (i = 0; i < sizeof(text) - 1 && input[i] != 0; ++i) text[i] = input[i]; text[i] = 0;
+    lua_pushboolean(L, GuiTextBox(*check_Rectangle(L, 1), text, sizeof(text), lua_toboolean(L, 3)));
+    lua_pushstring(L, text);
+    return 2;
+}
+
+static int f_GuiTextBoxMulti(lua_State *L) {
+    char text[1024]; size_t i;
+    const char *input = luaL_checkstring(L, 2);
+    for (i = 0; i < sizeof(text) - 1 && input[i] != 0; ++i) text[i] = input[i]; text[i] = 0;
+    lua_pushboolean(L, GuiTextBoxMulti(*check_Rectangle(L, 1), text, sizeof(text), lua_toboolean(L, 3)));
+    lua_pushstring(L, text);
+    return 2;
+}
+
+static int f_GuiSlider(lua_State *L) {
+    lua_pushnumber(L, GuiSlider(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkstring(L, 3), (float)luaL_checknumber(L, 4), (float)luaL_checknumber(L, 5), (float)luaL_checknumber(L, 6)));
+     return 1;
+}
+
+static int f_GuiSliderBar(lua_State *L) {
+    lua_pushnumber(L, GuiSliderBar(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkstring(L, 3), (float)luaL_checknumber(L, 4), (float)luaL_checknumber(L, 5), (float)luaL_checknumber(L, 6)));
+     return 1;
+}
+
+static int f_GuiProgressBar(lua_State *L) {
+    lua_pushnumber(L, GuiProgressBar(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkstring(L, 3), (float)luaL_checknumber(L, 4), (float)luaL_checknumber(L, 5), (float)luaL_checknumber(L, 6)));
+     return 1;
+}
+
+static int f_GuiStatusBar(lua_State *L) {
+    GuiStatusBar(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiDummyRec(lua_State *L) {
+    GuiDummyRec(*check_Rectangle(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
+static int f_GuiGrid(lua_State *L) {
+    return push_Vector2(L, GuiGrid(*check_Rectangle(L, 1), luaL_checkstring(L, 2), (float)luaL_checknumber(L, 3), luaL_checkinteger(L, 4)));
+}
+
+
+// Advance controls set --------------------------------------------------------
+
+static int f_GuiListView(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_GuiListViewEx(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_GuiMessageBox(lua_State *L) {
+    lua_pushinteger(L, GuiMessageBox(*check_Rectangle(L, 1), luaL_checkstring(L, 2), luaL_checkstring(L, 3), luaL_checkstring(L, 4)));
+     return 1;
+}
+
+static int f_GuiTextInputBox(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_GuiColorPicker(lua_State *L) {
+    return push_Color(L, GuiColorPicker(*check_Rectangle(L, 1), luaL_checkstring(L, 2), *check_Color(L, 3)));
+}
+
+static int f_GuiColorPanel(lua_State *L) {
+    return push_Color(L, GuiColorPanel(*check_Rectangle(L, 1), luaL_checkstring(L, 2), *check_Color(L, 3)));
+}
+
+static int f_GuiColorBarAlpha(lua_State *L) {
+    lua_pushnumber(L, GuiColorBarAlpha(*check_Rectangle(L, 1), luaL_checkstring(L, 2), (float)luaL_checknumber(L, 3)));
+     return 1;
+}
+
+static int f_GuiColorBarHue(lua_State *L) {
+    lua_pushnumber(L, GuiColorBarHue(*check_Rectangle(L, 1), luaL_checkstring(L, 2), (float)luaL_checknumber(L, 3)));
+     return 1;
+}
+
+
+// Styles loading functions ----------------------------------------------------
+
+static int f_GuiLoadStyle(lua_State *L) {
+    GuiLoadStyle(luaL_checkstring(L, 1));
+    return 0;
+}
+
+static int f_GuiLoadStyleDefault(lua_State *L) {
+    (void)L; GuiLoadStyleDefault();
+    return 0;
+}
+
+
+// Icons functionality ---------------------------------------------------------
+
+static int f_GuiIconText(lua_State *L) {
+    lua_pushstring(L, GuiIconText(luaL_checkinteger(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
+static int f_GuiDrawIcon(lua_State *L) {
+    GuiDrawIcon(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), *check_Color(L, 5));
+    return 0;
+}
+
+static int f_GuiSetIconScale(lua_State *L) {
+    GuiSetIconScale(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_GuiSetIconPixel(lua_State *L) {
+    GuiSetIconPixel(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int f_GuiClearIconPixel(lua_State *L) {
+    GuiClearIconPixel(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int f_GuiCheckIconPixel(lua_State *L) {
+    lua_pushboolean(L, GuiCheckIconPixel(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3)));
+    return 1;
+}
+
 
 //==[[ Lua module definition ]]=================================================
 
@@ -3097,6 +3383,66 @@ static const luaL_Reg raylib_funcs[] = {
         { "SetMusicPan", f_SetMusicPan },
         { "GetMusicTimeLength", f_GetMusicTimeLength },
         { "GetMusicTimePlayed", f_GetMusicTimePlayed },
+    // module: raygui ----------------------------------------------------------
+        // Global gui state control functions ----------------------------------
+        { "GuiEnable", f_GuiEnable },
+        { "GuiDisable", f_GuiDisable },
+        { "GuiLock", f_GuiLock },
+        { "GuiUnlock", f_GuiUnlock },
+        { "GuiIsLocked", f_GuiIsLocked },
+        { "GuiFade", f_GuiFade },
+        { "GuiSetState", f_GuiSetState },
+        { "GuiGetState", f_GuiGetState },
+        // Font set/get functions ----------------------------------------------
+        { "GuiSetFont", f_GuiSetFont },
+        { "GuiGetFont", f_GuiGetFont },
+        // Style set/get functions ---------------------------------------------
+        { "GuiSetStyle", f_GuiSetStyle },
+        { "GuiGetStyle", f_GuiGetStyle },
+        // Container/separator controls, useful for controls organization ------
+        { "GuiWindowBox", f_GuiWindowBox },
+        { "GuiGroupBox", f_GuiGroupBox },
+        { "GuiLine", f_GuiLine },
+        { "GuiPanel", f_GuiPanel },
+        { "GuiScrollPanel", f_GuiScrollPanel },
+        // Basic controls set --------------------------------------------------
+        { "GuiLabel", f_GuiLabel },
+        { "GuiButton", f_GuiButton },
+        { "GuiLabelButton", f_GuiLabelButton },
+        { "GuiToggle", f_GuiToggle },
+        { "GuiToggleGroup", f_GuiToggleGroup },
+        { "GuiCheckBox", f_GuiCheckBox },
+        { "GuiComboBox", f_GuiComboBox },
+        { "GuiDropdownBox", f_GuiDropdownBox },
+        { "GuiSpinner", f_GuiSpinner },
+        { "GuiValueBox", f_GuiValueBox },
+        { "GuiTextBox", f_GuiTextBox },
+        { "GuiTextBoxMulti", f_GuiTextBoxMulti },
+        { "GuiSlider", f_GuiSlider },
+        { "GuiSliderBar", f_GuiSliderBar },
+        { "GuiProgressBar", f_GuiProgressBar },
+        { "GuiStatusBar", f_GuiStatusBar },
+        { "GuiDummyRec", f_GuiDummyRec },
+        { "GuiGrid", f_GuiGrid },
+        // Advance controls set ------------------------------------------------
+        { "GuiListView", f_GuiListView },
+        { "GuiListViewEx", f_GuiListViewEx },
+        { "GuiMessageBox", f_GuiMessageBox },
+        { "GuiTextInputBox", f_GuiTextInputBox },
+        { "GuiColorPicker", f_GuiColorPicker },
+        { "GuiColorPanel", f_GuiColorPanel },
+        { "GuiColorBarAlpha", f_GuiColorBarAlpha },
+        { "GuiColorBarHue", f_GuiColorBarHue },
+        // Styles loading functions --------------------------------------------
+        { "GuiLoadStyle", f_GuiLoadStyle },
+        { "GuiLoadStyleDefault", f_GuiLoadStyleDefault },
+        // Icons functionality -------------------------------------------------
+        { "GuiIconText", f_GuiIconText },
+        { "GuiDrawIcon", f_GuiDrawIcon },
+        { "GuiSetIconScale", f_GuiSetIconScale },
+        { "GuiSetIconPixel", f_GuiSetIconPixel },
+        { "GuiClearIconPixel", f_GuiClearIconPixel },
+        { "GuiCheckIconPixel", f_GuiCheckIconPixel },
     // sentinel ----------------------------------------------------------------
     { NULL, NULL }
 };
@@ -3498,6 +3844,263 @@ static const struct {
         { "HUEBAR_PADDING", HUEBAR_PADDING },
         { "HUEBAR_SELECTOR_HEIGHT", HUEBAR_SELECTOR_HEIGHT },
         { "HUEBAR_SELECTOR_OVERFLOW", HUEBAR_SELECTOR_OVERFLOW },
+    // Icons enumeration -------------------------------------------------------
+        { "ICON_NONE", ICON_NONE },
+        { "ICON_FOLDER_FILE_OPEN", ICON_FOLDER_FILE_OPEN },
+        { "ICON_FILE_SAVE_CLASSIC", ICON_FILE_SAVE_CLASSIC },
+        { "ICON_FOLDER_OPEN", ICON_FOLDER_OPEN },
+        { "ICON_FOLDER_SAVE", ICON_FOLDER_SAVE },
+        { "ICON_FILE_OPEN", ICON_FILE_OPEN },
+        { "ICON_FILE_SAVE", ICON_FILE_SAVE },
+        { "ICON_FILE_EXPORT", ICON_FILE_EXPORT },
+        { "ICON_FILE_ADD", ICON_FILE_ADD },
+        { "ICON_FILE_DELETE", ICON_FILE_DELETE },
+        { "ICON_FILETYPE_TEXT", ICON_FILETYPE_TEXT },
+        { "ICON_FILETYPE_AUDIO", ICON_FILETYPE_AUDIO },
+        { "ICON_FILETYPE_IMAGE", ICON_FILETYPE_IMAGE },
+        { "ICON_FILETYPE_PLAY", ICON_FILETYPE_PLAY },
+        { "ICON_FILETYPE_VIDEO", ICON_FILETYPE_VIDEO },
+        { "ICON_FILETYPE_INFO", ICON_FILETYPE_INFO },
+        { "ICON_FILE_COPY", ICON_FILE_COPY },
+        { "ICON_FILE_CUT", ICON_FILE_CUT },
+        { "ICON_FILE_PASTE", ICON_FILE_PASTE },
+        { "ICON_CURSOR_HAND", ICON_CURSOR_HAND },
+        { "ICON_CURSOR_POINTER", ICON_CURSOR_POINTER },
+        { "ICON_CURSOR_CLASSIC", ICON_CURSOR_CLASSIC },
+        { "ICON_PENCIL", ICON_PENCIL },
+        { "ICON_PENCIL_BIG", ICON_PENCIL_BIG },
+        { "ICON_BRUSH_CLASSIC", ICON_BRUSH_CLASSIC },
+        { "ICON_BRUSH_PAINTER", ICON_BRUSH_PAINTER },
+        { "ICON_WATER_DROP", ICON_WATER_DROP },
+        { "ICON_COLOR_PICKER", ICON_COLOR_PICKER },
+        { "ICON_RUBBER", ICON_RUBBER },
+        { "ICON_COLOR_BUCKET", ICON_COLOR_BUCKET },
+        { "ICON_TEXT_T", ICON_TEXT_T },
+        { "ICON_TEXT_A", ICON_TEXT_A },
+        { "ICON_SCALE", ICON_SCALE },
+        { "ICON_RESIZE", ICON_RESIZE },
+        { "ICON_FILTER_POINT", ICON_FILTER_POINT },
+        { "ICON_FILTER_BILINEAR", ICON_FILTER_BILINEAR },
+        { "ICON_CROP", ICON_CROP },
+        { "ICON_CROP_ALPHA", ICON_CROP_ALPHA },
+        { "ICON_SQUARE_TOGGLE", ICON_SQUARE_TOGGLE },
+        { "ICON_SYMMETRY", ICON_SYMMETRY },
+        { "ICON_SYMMETRY_HORIZONTAL", ICON_SYMMETRY_HORIZONTAL },
+        { "ICON_SYMMETRY_VERTICAL", ICON_SYMMETRY_VERTICAL },
+        { "ICON_LENS", ICON_LENS },
+        { "ICON_LENS_BIG", ICON_LENS_BIG },
+        { "ICON_EYE_ON", ICON_EYE_ON },
+        { "ICON_EYE_OFF", ICON_EYE_OFF },
+        { "ICON_FILTER_TOP", ICON_FILTER_TOP },
+        { "ICON_FILTER", ICON_FILTER },
+        { "ICON_TARGET_POINT", ICON_TARGET_POINT },
+        { "ICON_TARGET_SMALL", ICON_TARGET_SMALL },
+        { "ICON_TARGET_BIG", ICON_TARGET_BIG },
+        { "ICON_TARGET_MOVE", ICON_TARGET_MOVE },
+        { "ICON_CURSOR_MOVE", ICON_CURSOR_MOVE },
+        { "ICON_CURSOR_SCALE", ICON_CURSOR_SCALE },
+        { "ICON_CURSOR_SCALE_RIGHT", ICON_CURSOR_SCALE_RIGHT },
+        { "ICON_CURSOR_SCALE_LEFT", ICON_CURSOR_SCALE_LEFT },
+        { "ICON_UNDO", ICON_UNDO },
+        { "ICON_REDO", ICON_REDO },
+        { "ICON_REREDO", ICON_REREDO },
+        { "ICON_MUTATE", ICON_MUTATE },
+        { "ICON_ROTATE", ICON_ROTATE },
+        { "ICON_REPEAT", ICON_REPEAT },
+        { "ICON_SHUFFLE", ICON_SHUFFLE },
+        { "ICON_EMPTYBOX", ICON_EMPTYBOX },
+        { "ICON_TARGET", ICON_TARGET },
+        { "ICON_TARGET_SMALL_FILL", ICON_TARGET_SMALL_FILL },
+        { "ICON_TARGET_BIG_FILL", ICON_TARGET_BIG_FILL },
+        { "ICON_TARGET_MOVE_FILL", ICON_TARGET_MOVE_FILL },
+        { "ICON_CURSOR_MOVE_FILL", ICON_CURSOR_MOVE_FILL },
+        { "ICON_CURSOR_SCALE_FILL", ICON_CURSOR_SCALE_FILL },
+        { "ICON_CURSOR_SCALE_RIGHT_FILL", ICON_CURSOR_SCALE_RIGHT_FILL },
+        { "ICON_CURSOR_SCALE_LEFT_FILL", ICON_CURSOR_SCALE_LEFT_FILL },
+        { "ICON_UNDO_FILL", ICON_UNDO_FILL },
+        { "ICON_REDO_FILL", ICON_REDO_FILL },
+        { "ICON_REREDO_FILL", ICON_REREDO_FILL },
+        { "ICON_MUTATE_FILL", ICON_MUTATE_FILL },
+        { "ICON_ROTATE_FILL", ICON_ROTATE_FILL },
+        { "ICON_REPEAT_FILL", ICON_REPEAT_FILL },
+        { "ICON_SHUFFLE_FILL", ICON_SHUFFLE_FILL },
+        { "ICON_EMPTYBOX_SMALL", ICON_EMPTYBOX_SMALL },
+        { "ICON_BOX", ICON_BOX },
+        { "ICON_BOX_TOP", ICON_BOX_TOP },
+        { "ICON_BOX_TOP_RIGHT", ICON_BOX_TOP_RIGHT },
+        { "ICON_BOX_RIGHT", ICON_BOX_RIGHT },
+        { "ICON_BOX_BOTTOM_RIGHT", ICON_BOX_BOTTOM_RIGHT },
+        { "ICON_BOX_BOTTOM", ICON_BOX_BOTTOM },
+        { "ICON_BOX_BOTTOM_LEFT", ICON_BOX_BOTTOM_LEFT },
+        { "ICON_BOX_LEFT", ICON_BOX_LEFT },
+        { "ICON_BOX_TOP_LEFT", ICON_BOX_TOP_LEFT },
+        { "ICON_BOX_CENTER", ICON_BOX_CENTER },
+        { "ICON_BOX_CIRCLE_MASK", ICON_BOX_CIRCLE_MASK },
+        { "ICON_POT", ICON_POT },
+        { "ICON_ALPHA_MULTIPLY", ICON_ALPHA_MULTIPLY },
+        { "ICON_ALPHA_CLEAR", ICON_ALPHA_CLEAR },
+        { "ICON_DITHERING", ICON_DITHERING },
+        { "ICON_MIPMAPS", ICON_MIPMAPS },
+        { "ICON_BOX_GRID", ICON_BOX_GRID },
+        { "ICON_GRID", ICON_GRID },
+        { "ICON_BOX_CORNERS_SMALL", ICON_BOX_CORNERS_SMALL },
+        { "ICON_BOX_CORNERS_BIG", ICON_BOX_CORNERS_BIG },
+        { "ICON_FOUR_BOXES", ICON_FOUR_BOXES },
+        { "ICON_GRID_FILL", ICON_GRID_FILL },
+        { "ICON_BOX_MULTISIZE", ICON_BOX_MULTISIZE },
+        { "ICON_ZOOM_SMALL", ICON_ZOOM_SMALL },
+        { "ICON_ZOOM_MEDIUM", ICON_ZOOM_MEDIUM },
+        { "ICON_ZOOM_BIG", ICON_ZOOM_BIG },
+        { "ICON_ZOOM_ALL", ICON_ZOOM_ALL },
+        { "ICON_ZOOM_CENTER", ICON_ZOOM_CENTER },
+        { "ICON_BOX_DOTS_SMALL", ICON_BOX_DOTS_SMALL },
+        { "ICON_BOX_DOTS_BIG", ICON_BOX_DOTS_BIG },
+        { "ICON_BOX_CONCENTRIC", ICON_BOX_CONCENTRIC },
+        { "ICON_BOX_GRID_BIG", ICON_BOX_GRID_BIG },
+        { "ICON_OK_TICK", ICON_OK_TICK },
+        { "ICON_CROSS", ICON_CROSS },
+        { "ICON_ARROW_LEFT", ICON_ARROW_LEFT },
+        { "ICON_ARROW_RIGHT", ICON_ARROW_RIGHT },
+        { "ICON_ARROW_DOWN", ICON_ARROW_DOWN },
+        { "ICON_ARROW_UP", ICON_ARROW_UP },
+        { "ICON_ARROW_LEFT_FILL", ICON_ARROW_LEFT_FILL },
+        { "ICON_ARROW_RIGHT_FILL", ICON_ARROW_RIGHT_FILL },
+        { "ICON_ARROW_DOWN_FILL", ICON_ARROW_DOWN_FILL },
+        { "ICON_ARROW_UP_FILL", ICON_ARROW_UP_FILL },
+        { "ICON_AUDIO", ICON_AUDIO },
+        { "ICON_FX", ICON_FX },
+        { "ICON_WAVE", ICON_WAVE },
+        { "ICON_WAVE_SINUS", ICON_WAVE_SINUS },
+        { "ICON_WAVE_SQUARE", ICON_WAVE_SQUARE },
+        { "ICON_WAVE_TRIANGULAR", ICON_WAVE_TRIANGULAR },
+        { "ICON_CROSS_SMALL", ICON_CROSS_SMALL },
+        { "ICON_PLAYER_PREVIOUS", ICON_PLAYER_PREVIOUS },
+        { "ICON_PLAYER_PLAY_BACK", ICON_PLAYER_PLAY_BACK },
+        { "ICON_PLAYER_PLAY", ICON_PLAYER_PLAY },
+        { "ICON_PLAYER_PAUSE", ICON_PLAYER_PAUSE },
+        { "ICON_PLAYER_STOP", ICON_PLAYER_STOP },
+        { "ICON_PLAYER_NEXT", ICON_PLAYER_NEXT },
+        { "ICON_PLAYER_RECORD", ICON_PLAYER_RECORD },
+        { "ICON_MAGNET", ICON_MAGNET },
+        { "ICON_LOCK_CLOSE", ICON_LOCK_CLOSE },
+        { "ICON_LOCK_OPEN", ICON_LOCK_OPEN },
+        { "ICON_CLOCK", ICON_CLOCK },
+        { "ICON_TOOLS", ICON_TOOLS },
+        { "ICON_GEAR", ICON_GEAR },
+        { "ICON_GEAR_BIG", ICON_GEAR_BIG },
+        { "ICON_BIN", ICON_BIN },
+        { "ICON_HAND_POINTER", ICON_HAND_POINTER },
+        { "ICON_LASER", ICON_LASER },
+        { "ICON_COIN", ICON_COIN },
+        { "ICON_EXPLOSION", ICON_EXPLOSION },
+        { "ICON_1UP", ICON_1UP },
+        { "ICON_PLAYER", ICON_PLAYER },
+        { "ICON_PLAYER_JUMP", ICON_PLAYER_JUMP },
+        { "ICON_KEY", ICON_KEY },
+        { "ICON_DEMON", ICON_DEMON },
+        { "ICON_TEXT_POPUP", ICON_TEXT_POPUP },
+        { "ICON_GEAR_EX", ICON_GEAR_EX },
+        { "ICON_CRACK", ICON_CRACK },
+        { "ICON_CRACK_POINTS", ICON_CRACK_POINTS },
+        { "ICON_STAR", ICON_STAR },
+        { "ICON_DOOR", ICON_DOOR },
+        { "ICON_EXIT", ICON_EXIT },
+        { "ICON_MODE_2D", ICON_MODE_2D },
+        { "ICON_MODE_3D", ICON_MODE_3D },
+        { "ICON_CUBE", ICON_CUBE },
+        { "ICON_CUBE_FACE_TOP", ICON_CUBE_FACE_TOP },
+        { "ICON_CUBE_FACE_LEFT", ICON_CUBE_FACE_LEFT },
+        { "ICON_CUBE_FACE_FRONT", ICON_CUBE_FACE_FRONT },
+        { "ICON_CUBE_FACE_BOTTOM", ICON_CUBE_FACE_BOTTOM },
+        { "ICON_CUBE_FACE_RIGHT", ICON_CUBE_FACE_RIGHT },
+        { "ICON_CUBE_FACE_BACK", ICON_CUBE_FACE_BACK },
+        { "ICON_CAMERA", ICON_CAMERA },
+        { "ICON_SPECIAL", ICON_SPECIAL },
+        { "ICON_LINK_NET", ICON_LINK_NET },
+        { "ICON_LINK_BOXES", ICON_LINK_BOXES },
+        { "ICON_LINK_MULTI", ICON_LINK_MULTI },
+        { "ICON_LINK", ICON_LINK },
+        { "ICON_LINK_BROKE", ICON_LINK_BROKE },
+        { "ICON_TEXT_NOTES", ICON_TEXT_NOTES },
+        { "ICON_NOTEBOOK", ICON_NOTEBOOK },
+        { "ICON_SUITCASE", ICON_SUITCASE },
+        { "ICON_SUITCASE_ZIP", ICON_SUITCASE_ZIP },
+        { "ICON_MAILBOX", ICON_MAILBOX },
+        { "ICON_MONITOR", ICON_MONITOR },
+        { "ICON_PRINTER", ICON_PRINTER },
+        { "ICON_PHOTO_CAMERA", ICON_PHOTO_CAMERA },
+        { "ICON_PHOTO_CAMERA_FLASH", ICON_PHOTO_CAMERA_FLASH },
+        { "ICON_HOUSE", ICON_HOUSE },
+        { "ICON_HEART", ICON_HEART },
+        { "ICON_CORNER", ICON_CORNER },
+        { "ICON_VERTICAL_BARS", ICON_VERTICAL_BARS },
+        { "ICON_VERTICAL_BARS_FILL", ICON_VERTICAL_BARS_FILL },
+        { "ICON_LIFE_BARS", ICON_LIFE_BARS },
+        { "ICON_INFO", ICON_INFO },
+        { "ICON_CROSSLINE", ICON_CROSSLINE },
+        { "ICON_HELP", ICON_HELP },
+        { "ICON_FILETYPE_ALPHA", ICON_FILETYPE_ALPHA },
+        { "ICON_FILETYPE_HOME", ICON_FILETYPE_HOME },
+        { "ICON_LAYERS_VISIBLE", ICON_LAYERS_VISIBLE },
+        { "ICON_LAYERS", ICON_LAYERS },
+        { "ICON_WINDOW", ICON_WINDOW },
+        { "ICON_HIDPI", ICON_HIDPI },
+        { "ICON_FILETYPE_BINARY", ICON_FILETYPE_BINARY },
+        { "ICON_HEX", ICON_HEX },
+        { "ICON_SHIELD", ICON_SHIELD },
+        { "ICON_FILE_NEW", ICON_FILE_NEW },
+        { "ICON_FOLDER_ADD", ICON_FOLDER_ADD },
+        { "ICON_ALARM", ICON_ALARM },
+        { "ICON_206", ICON_206 },
+        { "ICON_207", ICON_207 },
+        { "ICON_208", ICON_208 },
+        { "ICON_209", ICON_209 },
+        { "ICON_210", ICON_210 },
+        { "ICON_211", ICON_211 },
+        { "ICON_212", ICON_212 },
+        { "ICON_213", ICON_213 },
+        { "ICON_214", ICON_214 },
+        { "ICON_215", ICON_215 },
+        { "ICON_216", ICON_216 },
+        { "ICON_217", ICON_217 },
+        { "ICON_218", ICON_218 },
+        { "ICON_219", ICON_219 },
+        { "ICON_220", ICON_220 },
+        { "ICON_221", ICON_221 },
+        { "ICON_222", ICON_222 },
+        { "ICON_223", ICON_223 },
+        { "ICON_224", ICON_224 },
+        { "ICON_225", ICON_225 },
+        { "ICON_226", ICON_226 },
+        { "ICON_227", ICON_227 },
+        { "ICON_228", ICON_228 },
+        { "ICON_229", ICON_229 },
+        { "ICON_230", ICON_230 },
+        { "ICON_231", ICON_231 },
+        { "ICON_232", ICON_232 },
+        { "ICON_233", ICON_233 },
+        { "ICON_234", ICON_234 },
+        { "ICON_235", ICON_235 },
+        { "ICON_236", ICON_236 },
+        { "ICON_237", ICON_237 },
+        { "ICON_238", ICON_238 },
+        { "ICON_239", ICON_239 },
+        { "ICON_240", ICON_240 },
+        { "ICON_241", ICON_241 },
+        { "ICON_242", ICON_242 },
+        { "ICON_243", ICON_243 },
+        { "ICON_244", ICON_244 },
+        { "ICON_245", ICON_245 },
+        { "ICON_246", ICON_246 },
+        { "ICON_247", ICON_247 },
+        { "ICON_248", ICON_248 },
+        { "ICON_249", ICON_249 },
+        { "ICON_250", ICON_250 },
+        { "ICON_251", ICON_251 },
+        { "ICON_252", ICON_252 },
+        { "ICON_253", ICON_253 },
+        { "ICON_254", ICON_254 },
+        { "ICON_255", ICON_255 },
     // sentinel ----------------------------------------------------------------
     { NULL, 0 }
 };

@@ -7,6 +7,7 @@ local templates = {
         ['int'] = 'luaL_checkinteger(L, %d)',
         ['float'] = '(float)luaL_checknumber(L, %d)',
         ['const char*'] = 'luaL_checkstring(L, %d)',
+        ['bool'] = 'lua_toboolean(L, %d)',
         ['Vector2'] = '*check_Vector2(L, %d)',
         ['Vector3'] = '*check_Vector3(L, %d)',
         ['Rectangle'] = '*check_Rectangle(L, %d)',
@@ -50,7 +51,7 @@ function load_raylib()
 end
 
 function parse_function(line)
-    local ret_type, ret_ptr, name, arg_str = string.match(line, 'RLAPI ([^%s]+) (%*?)(%w+)%(([^%)]+)%)')
+    local ret_type, ret_ptr, name, arg_str = string.match(line, 'RAYGUIAPI ([^%s]+) (%*?)(%w+)%(([^%)]+)%)')
     if ret_type and name then
         if not string.match(name, 'Unload.*') then
             -- parse all arguments
