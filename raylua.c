@@ -1454,6 +1454,107 @@ static int f_SetMouseCursor(lua_State *L) {
     return 0;
 }
 
+// Input-related functions: touch ----------------------------------------------
+
+static int f_GetTouchX(lua_State *L) {
+     lua_pushinteger(L, GetTouchX());
+     return 1;
+}
+
+static int f_GetTouchY(lua_State *L) {
+     lua_pushinteger(L, GetTouchY());
+     return 1;
+}
+
+static int f_GetTouchPosition(lua_State *L) {
+    return push_Vector2(L, GetTouchPosition(luaL_checkinteger(L, 1)));
+}
+
+static int f_GetTouchPointId(lua_State *L) {
+     lua_pushinteger(L, GetTouchPointId(luaL_checkinteger(L, 1)));
+     return 1;
+}
+
+static int f_GetTouchPointCount(lua_State *L) {
+     lua_pushinteger(L, GetTouchPointCount());
+     return 1;
+}
+
+
+//==[[ module: rgestures ]]=====================================================
+
+static int f_SetGesturesEnabled(lua_State *L) {
+    SetGesturesEnabled(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_IsGestureDetected(lua_State *L) {
+     lua_pushboolean(L, IsGestureDetected(luaL_checkinteger(L, 1)));
+    return 1;
+}
+
+static int f_GetGestureDetected(lua_State *L) {
+     lua_pushinteger(L, GetGestureDetected());
+     return 1;
+}
+
+static int f_GetGestureHoldDuration(lua_State *L) {
+     lua_pushnumber(L, GetGestureHoldDuration());
+     return 1;
+}
+
+static int f_GetGestureDragVector(lua_State *L) {
+    return push_Vector2(L, GetGestureDragVector());
+}
+
+static int f_GetGestureDragAngle(lua_State *L) {
+     lua_pushnumber(L, GetGestureDragAngle());
+     return 1;
+}
+
+static int f_GetGesturePinchVector(lua_State *L) {
+    return push_Vector2(L, GetGesturePinchVector());
+}
+
+static int f_GetGesturePinchAngle(lua_State *L) {
+     lua_pushnumber(L, GetGesturePinchAngle());
+     return 1;
+}
+
+
+//==[[ module: rcamera ]]=======================================================
+
+static int f_SetCameraMode(lua_State *L) {
+    SetCameraMode(*check_Camera3D(L, 1), luaL_checkinteger(L, 2));
+    return 0;
+}
+
+static int f_UpdateCamera(lua_State *L) {
+    UpdateCamera(check_Camera3D(L, 1));
+    return 0;
+}
+
+static int f_SetCameraPanControl(lua_State *L) {
+    SetCameraPanControl(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_SetCameraAltControl(lua_State *L) {
+    SetCameraAltControl(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_SetCameraSmoothZoomControl(lua_State *L) {
+    SetCameraSmoothZoomControl(luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int f_SetCameraMoveControls(lua_State *L) {
+    SetCameraMoveControls(luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), luaL_checkinteger(L, 5), luaL_checkinteger(L, 6));
+    return 0;
+}
+
+
 
 //==[[ module: rshapes ]]=======================================================
 
@@ -2725,6 +2826,28 @@ static const luaL_Reg raylib_funcs[] = {
         { "SetMouseScale", f_SetMouseScale },
         { "GetMouseWheelMove", f_GetMouseWheelMove },
         { "SetMouseCursor", f_SetMouseCursor },
+        // Input-related functions: touch --------------------------------------
+        { "GetTouchX", f_GetTouchX },
+        { "GetTouchY", f_GetTouchY },
+        { "GetTouchPosition", f_GetTouchPosition },
+        { "GetTouchPointId", f_GetTouchPointId },
+        { "GetTouchPointCount", f_GetTouchPointCount },
+    // module: rgestures -------------------------------------------------------
+        { "SetGesturesEnabled", f_SetGesturesEnabled },
+        { "IsGestureDetected", f_IsGestureDetected },
+        { "GetGestureDetected", f_GetGestureDetected },
+        { "GetGestureHoldDuration", f_GetGestureHoldDuration },
+        { "GetGestureDragVector", f_GetGestureDragVector },
+        { "GetGestureDragAngle", f_GetGestureDragAngle },
+        { "GetGesturePinchVector", f_GetGesturePinchVector },
+        { "GetGesturePinchAngle", f_GetGesturePinchAngle },
+    // module: rcamera ---------------------------------------------------------
+        { "SetCameraMode", f_SetCameraMode },
+        { "UpdateCamera", f_UpdateCamera },
+        { "SetCameraPanControl", f_SetCameraPanControl },
+        { "SetCameraAltControl", f_SetCameraAltControl },
+        { "SetCameraSmoothZoomControl", f_SetCameraSmoothZoomControl },
+        { "SetCameraMoveControls", f_SetCameraMoveControls },
     // module: rshapes ---------------------------------------------------------
         { "SetShapesTexture", f_SetShapesTexture },
         // Basic Shapes Drawing Functions --------------------------------------

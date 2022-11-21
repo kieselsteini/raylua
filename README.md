@@ -31,9 +31,9 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
     - Input-related functions: keyboard ✅ (100%)
     - Input-related functions: gamepads ✅ (100%)
     - Input-related functions: mouse ✅ (100%)
-    - Input-related functions: touch ❌
-- module: rgestures ❌
-- module: rcamera ❌
+    - Input-related functions: touch ✅ (100%)
+- module: rgestures ✅ (100%)
+- module: rcamera ✅ (100%)
 - module: rshapes ✅ (100%)
 - module: rtextures 🚧
     - Image loading functions ✅ (100%)
