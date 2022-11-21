@@ -9,7 +9,7 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
 
 ## State
 
-- module: rcore 🚧
+- module: **rcore** 🚧
     - Window-related functions ✅ (100%)
         - GetWindowHandle ❌ (useless in Lua)
         - GetScreenWidth / GetScreenHeight 🌔 **GetScreenSize**
@@ -33,10 +33,10 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
     - Input-related functions: gamepads ✅ (100%)
     - Input-related functions: mouse ✅ (100%)
     - Input-related functions: touch ✅ (100%)
-- module: rgestures ✅ (100%)
-- module: rcamera ✅ (100%)
-- module: rshapes ✅ (100%)
-- module: rtextures 🚧
+- module: **rgestures** ✅ (100%)
+- module: **rcamera** ✅ (100%)
+- module: **rshapes** ✅ (100%)
+- module: **rtextures** 🚧
     - Image loading functions ✅ (100%)
         - LoadImageFromMemory 🌔 **LoadImageFromString**
     - Image generation functions ✅ (100%)
@@ -50,7 +50,7 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
     - Texture drawing functions ✅ (100%)
     - Color/pixel related functions 🚧
         - **Fade** is implemeted on the **Color** object
-- module: rtext 🚧
+- module: **rtext** 🚧
     - Font loading/unloading functions 🚧 (42%)
         - LoadFontEx ❌
         - LoadFontFromImage ❌
@@ -65,15 +65,15 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
         - GetGlyphAtlasRec ❌
     - Text codepoints management functions (unicode characters) ❌ **use utf8.* module**
     - Text strings management functions (no UTF-8 strings, only byte chars) ❌ **use string.* module**
-- module: rmodels ❌
-- module: raudio ✅ (AudioStream)
+- module: **rmodels** ❌
+- module: **raudio** ✅ (AudioStream)
     - Audio device management functions ✅ (100%)
     - Wave/Sound loading/unloading functions ✅
         - LoadWaveFromMemory 🌔 **LoadWaveFromString**
     - Music management functions ✅
         - LoadMusicStreamFromMemory 🌔 **LoadMusicStreamFromString**
     - AudioStream management functions ❌
-- module: raygui (3.2)
+- module: **raygui** (3.2)
     - Global gui state control functions ✅
     - Font set/get functions ✅
     - Style set/get functions ✅
