@@ -25,9 +25,9 @@ local templates = {
     },
     returns = {
         ['void'] = '    %s;\n    return 0;',
-        ['bool'] = '     lua_pushboolean(L, %s);\n    return 1;',
-        ['float'] = '     lua_pushnumber(L, %s);\n     return 1;',
-        ['int'] = '     lua_pushinteger(L, %s);\n     return 1;',
+        ['bool'] = '    lua_pushboolean(L, %s);\n    return 1;',
+        ['float'] = '    lua_pushnumber(L, %s);\n     return 1;',
+        ['int'] = '    lua_pushinteger(L, %s);\n     return 1;',
         ['Vector2'] = '    return push_Vector2(L, %s);',
         ['Vector3'] = '    return push_Vector3(L, %s);',
         ['Image'] = '    return push_Image(L, %s);',
