@@ -714,6 +714,84 @@ static int f_Camera3D_set_projection(lua_State *L) {
 }
 
 
+//==[[ Camera2D object ]]=======================================================
+
+static int push_Camera2D(lua_State *L, const Camera2D camera) {
+    *((Camera2D*)push_object(L, "Camera3D", sizeof(Camera2D), 0)) = camera;
+    return 1;
+}
+
+static Camera2D *check_Camera2D(lua_State *L, const int idx) {
+    return luaL_checkudata(L, idx, "Camera2D");
+}
+
+static int f_Camera2D(lua_State *L) {
+    switch (lua_gettop(L)) {
+        case 0: return push_Camera2D(L, (Camera2D){});
+        case 1: return push_Camera2D(L, *check_Camera2D(L, 1));
+        case 4: return push_Camera2D(L, (Camera2D){
+            .offset = *check_Vector2(L, 1),
+            .target = *check_Vector2(L, 2),
+            .rotation = (float)luaL_checknumber(L, 3),
+            .zoom = (float)luaL_checknumber(L, 4)
+        });
+        default: return luaL_error(L, "wrong number of arguments");
+    }
+}
+
+static int f_Camera2D__tostring(lua_State *L) {
+    const Camera2D *camera = check_Camera2D(L, 1);
+    lua_pushfstring(L, "Camera2D(%p)", camera);
+    return 1;
+}
+
+static int f_Camera2D__index(lua_State *L) {
+    return push_index(L, "Camera2D");
+}
+
+static int f_Camera2D__newindex(lua_State *L) {
+    return push_newindex(L, "Camera2D");
+}
+
+static int f_Camera2D_get_offset(lua_State *L) {
+    return push_Vector2_Ref(L, &check_Camera2D(L, 1)->offset);
+}
+
+static int f_Camera2D_set_offset(lua_State *L) {
+    check_Camera2D(L, 1)->offset = *check_Vector2(L, 2);
+    return 0;
+}
+
+static int f_Camera2D_get_target(lua_State *L) {
+    return push_Vector2_Ref(L, &check_Camera2D(L, 1)->target);
+}
+
+static int f_Camera2D_set_target(lua_State *L) {
+    check_Camera2D(L, 1)->target = *check_Vector2(L, 2);
+    return 0;
+}
+
+static int f_Camera2D_get_rotation(lua_State *L) {
+     lua_pushnumber(L, check_Camera2D(L, 1)->rotation);
+     return 1;
+}
+
+static int f_Camera2D_set_rotation(lua_State *L) {
+    check_Camera2D(L, 1)->rotation = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int f_Camera2D_get_zoom(lua_State *L) {
+     lua_pushnumber(L, check_Camera2D(L, 1)->zoom);
+     return 1;
+}
+
+static int f_Camera2D_set_zoom(lua_State *L) {
+    check_Camera2D(L, 1)->zoom = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+
 //==[[ FilePathList object ]]===================================================
 
 static int push_FilePathList(lua_State *L, FilePathList list, void (*unload)(FilePathList)) {
@@ -2141,6 +2219,21 @@ static const luaL_Reg Camera3D_meta[] = {
     { NULL, NULL }
 };
 
+static const luaL_Reg Camera2D_meta[] = {
+    { "__tostring", f_Camera2D__tostring },
+    { "__index", f_Camera2D__index },
+    { "__newindex", f_Camera2D__newindex },
+    { "?offset", f_Camera2D_get_offset },
+    { "=offset", f_Camera2D_set_offset },
+    { "?target", f_Camera2D_get_target },
+    { "=target", f_Camera2D_set_target },
+    { "?rotation", f_Camera2D_get_rotation },
+    { "=rotation", f_Camera2D_set_rotation },
+    { "?zoom", f_Camera2D_get_zoom },
+    { "=zoom", f_Camera2D_set_zoom },
+    { NULL, NULL }
+};
+
 static const luaL_Reg raylib_funcs[] = {
     // Object creation ---------------------------------------------------------
     { "Vector2", f_Vector2 },
@@ -2148,6 +2241,7 @@ static const luaL_Reg raylib_funcs[] = {
     { "Color", f_Color },
     { "Rectangle", f_Rectangle },
     { "Camera3D", f_Camera3D },
+    { "Camera2D", f_Camera2D },
     // module: core ------------------------------------------------------------
         // Window-related functions
         { "InitWindow", f_InitWindow },
@@ -2604,6 +2698,7 @@ static void InitRayLua(lua_State *L) {
     push_meta(L, "Texture", Texture_meta);
     push_meta(L, "Font", Font_meta);
     push_meta(L, "Camera3D", Camera3D_meta);
+    push_meta(L, "Camera2D", Camera2D_meta);
     // register our functions
     lua_pushglobaltable(L);
     luaL_setfuncs(L, raylib_funcs, 0);
