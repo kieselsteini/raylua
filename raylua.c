@@ -1444,7 +1444,8 @@ static int f_LoadImageFromScreen(lua_State *L) {
 }
 
 static int f_ExportImage(lua_State *L) {
-     return lua_pushboolean(L, ExportImage(*check_Image(L, 1), luaL_checkstring(L, 2)));
+    lua_pushboolean(L, ExportImage(*check_Image(L, 1), luaL_checkstring(L, 2)));
+    return 1;
 }
 
 
