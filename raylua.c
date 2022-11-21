@@ -32,6 +32,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "raygui.h"
 
 
 //==[[ Helper Functions ]]======================================================
@@ -3410,6 +3411,93 @@ static const struct {
         { "NPATCH_NINE_PATCH", NPATCH_NINE_PATCH },
         { "NPATCH_THREE_PATCH_VERTICAL", NPATCH_THREE_PATCH_VERTICAL },
         { "NPATCH_THREE_PATCH_HORIZONTAL", NPATCH_THREE_PATCH_HORIZONTAL },
+    // Gui control state -------------------------------------------------------
+        { "STATE_NORMAL", STATE_NORMAL },
+        { "STATE_FOCUSED", STATE_FOCUSED },
+        { "STATE_PRESSED", STATE_PRESSED },
+        { "STATE_DISABLED", STATE_DISABLED },
+    // Gui control text alignment ----------------------------------------------
+        { "TEXT_ALIGN_LEFT", TEXT_ALIGN_LEFT },
+        { "TEXT_ALIGN_CENTER", TEXT_ALIGN_CENTER },
+        { "TEXT_ALIGN_RIGHT", TEXT_ALIGN_RIGHT },
+    // Gui controls ------------------------------------------------------------
+        { "DEFAULT", DEFAULT },
+        { "LABEL", LABEL },
+        { "BUTTON", BUTTON },
+        { "TOGGLE", TOGGLE },
+        { "SLIDER", SLIDER },
+        { "PROGRESSBAR", PROGRESSBAR },
+        { "CHECKBOX", CHECKBOX },
+        { "COMBOBOX", COMBOBOX },
+        { "DROPDOWNBOX", DROPDOWNBOX },
+        { "TEXTBOX", TEXTBOX },
+        { "VALUEBOX", VALUEBOX },
+        { "SPINNER", SPINNER },
+        { "LISTVIEW", LISTVIEW },
+        { "COLORPICKER", COLORPICKER },
+        { "SCROLLBAR", SCROLLBAR },
+        { "STATUSBAR", STATUSBAR },
+    // Gui base properties for every control -----------------------------------
+        { "BORDER_COLOR_NORMAL", BORDER_COLOR_NORMAL },
+        { "BASE_COLOR_NORMAL", BASE_COLOR_NORMAL },
+        { "TEXT_COLOR_NORMAL", TEXT_COLOR_NORMAL },
+        { "BORDER_COLOR_FOCUSED", BORDER_COLOR_FOCUSED },
+        { "BASE_COLOR_FOCUSED", BASE_COLOR_FOCUSED },
+        { "TEXT_COLOR_FOCUSED", TEXT_COLOR_FOCUSED },
+        { "BORDER_COLOR_PRESSED", BORDER_COLOR_PRESSED },
+        { "BASE_COLOR_PRESSED", BASE_COLOR_PRESSED },
+        { "TEXT_COLOR_PRESSED", TEXT_COLOR_PRESSED },
+        { "BORDER_COLOR_DISABLED", BORDER_COLOR_DISABLED },
+        { "BASE_COLOR_DISABLED", BASE_COLOR_DISABLED },
+        { "TEXT_COLOR_DISABLED", TEXT_COLOR_DISABLED },
+        { "BORDER_WIDTH", BORDER_WIDTH },
+        { "TEXT_PADDING", TEXT_PADDING },
+        { "TEXT_ALIGNMENT", TEXT_ALIGNMENT },
+        { "RESERVED", RESERVED },
+    // Gui extended properties depend on control -------------------------------
+        { "TEXT_SIZE", TEXT_SIZE },
+        { "TEXT_SPACING", TEXT_SPACING },
+        { "LINE_COLOR", LINE_COLOR },
+        { "BACKGROUND_COLOR", BACKGROUND_COLOR },
+    // Toggle/ToggleGroup ------------------------------------------------------
+        { "GROUP_PADDING", GROUP_PADDING },
+    // Slider/SliderBar --------------------------------------------------------
+        { "SLIDER_WIDTH", SLIDER_WIDTH },
+        { "SLIDER_PADDING", SLIDER_PADDING },
+    // ProgressBar -------------------------------------------------------------
+        { "PROGRESS_PADDING", PROGRESS_PADDING },
+    // ScrollBar ---------------------------------------------------------------
+        { "ARROWS_SIZE", ARROWS_SIZE },
+        { "ARROWS_VISIBLE", ARROWS_VISIBLE },
+        { "SCROLL_SLIDER_PADDING", SCROLL_SLIDER_PADDING },
+        { "SCROLL_SLIDER_SIZE", SCROLL_SLIDER_SIZE },
+        { "SCROLL_PADDING", SCROLL_PADDING },
+        { "SCROLL_SPEED", SCROLL_SPEED },
+    // CheckBox ----------------------------------------------------------------
+        { "CHECK_PADDING", CHECK_PADDING },
+    // ComboBox ----------------------------------------------------------------
+        { "COMBO_BUTTON_WIDTH", COMBO_BUTTON_WIDTH },
+        { "COMBO_BUTTON_SPACING", COMBO_BUTTON_SPACING },
+    // DropdownBox -------------------------------------------------------------
+        { "ARROW_PADDING", ARROW_PADDING },
+        { "DROPDOWN_ITEMS_SPACING", DROPDOWN_ITEMS_SPACING },
+    // TextBox/TextBoxMulti/ValueBox/Spinner -----------------------------------
+        { "TEXT_INNER_PADDING", TEXT_INNER_PADDING },
+        { "TEXT_LINES_SPACING", TEXT_LINES_SPACING },
+    // Spinner -----------------------------------------------------------------
+        { "SPIN_BUTTON_WIDTH", SPIN_BUTTON_WIDTH },
+        { "SPIN_BUTTON_SPACING", SPIN_BUTTON_SPACING },
+    // ListView ----------------------------------------------------------------
+        { "LIST_ITEMS_HEIGHT", LIST_ITEMS_HEIGHT },
+        { "LIST_ITEMS_SPACING", LIST_ITEMS_SPACING },
+        { "SCROLLBAR_WIDTH", SCROLLBAR_WIDTH },
+        { "SCROLLBAR_SIDE", SCROLLBAR_SIDE },
+    // ColorPicker -------------------------------------------------------------
+        { "COLOR_SELECTOR_SIZE", COLOR_SELECTOR_SIZE },
+        { "HUEBAR_WIDTH", HUEBAR_WIDTH },
+        { "HUEBAR_PADDING", HUEBAR_PADDING },
+        { "HUEBAR_SELECTOR_HEIGHT", HUEBAR_SELECTOR_HEIGHT },
+        { "HUEBAR_SELECTOR_OVERFLOW", HUEBAR_SELECTOR_OVERFLOW },
     // sentinel ----------------------------------------------------------------
     { NULL, 0 }
 };
