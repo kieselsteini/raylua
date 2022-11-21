@@ -65,31 +65,27 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
     - Text codepoints management functions (unicode characters) ❌ **use utf8.* module**
     - Text strings management functions (no UTF-8 strings, only byte chars) ❌ **use string.* module**
 - module: rmodels ❌
-- module: raudio ❌
+- module: raudio ✅ (AudioStream)
+    - Audio device management functions ✅ (100%)
+    - Wave/Sound loading/unloading functions ✅
+        - LoadWaveFromMemory 🌔 **LoadWaveFromString**
+    - Music management functions ✅
+        - LoadMusicStreamFromMemory 🌔 **LoadMusicStreamFromString**
+    - AudioStream management functions ❌
 - structs (objects)
     - **Vector2** ✅
-        - almost complete implementation
-        - some bits missing like DotProduct etc.
-    - **Vector3** 🚧
-        - basic member access done
-        - basic math operations done
+    - **Vector3** ✅
     - **Vector4** ❌
     - **Quaternion** ❌
     - **Matrix** ❌
     - **Color** ✅
-        - almost complete
-        - missing color conversion methods
-    - **Rectangle** 🚧
-        - basic member access done
-    - **Image** 🚧
-        - just started with implementation
-    - **Texture** 🚧
-        - just started with implementation
+    - **Rectangle** ✅
+    - **Image** ✅
+    - **Texture** ✅
     - **RenderTexture** ❌
     - **NPatchInfo** ❌
     - **GlyphInfo** ❌
-    - **Font** 🚧
-        - just started with implementation
+    - **Font** ✅
     - **Camera3D** ✅
     - **Camera2D** ✅
     - **Mesh** ❌
@@ -103,12 +99,11 @@ Last but not least, fun. I just discovered raylib and I enjoy Lua programming, s
     - **Ray** ❌
     - **RayCollision** ❌
     - **BoundingBox** ❌
-    - **Wave** ❌
-    - **Sound** ❌
-    - **Music** ❌
+    - **Wave** ✅
+    - **Sound** ✅
+    - **Music** ✅
     - **AudioStream** ❌
     - **VrDeviceInfo** ❌
     - **VrStereoConfig** ❌
-    - **FilePathList** ❌
-        - will probably never implemented, as this can be easily represented as a Lua table with strings
-
+    - **FilePathList** 🌔
+        - will be converted "in-place" to Lua tables in functions which will return this

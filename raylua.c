@@ -792,6 +792,95 @@ static int f_Camera2D_set_zoom(lua_State *L) {
 }
 
 
+//==[[ Wave object ]]===========================================================
+
+static int push_Wave(lua_State *L, const Wave wave) {
+    *((Wave*)push_object(L, "Wave", sizeof(Wave), 0)) = wave;
+    return 1;
+}
+
+static Wave *check_Wave(lua_State *L, const int idx) {
+    return luaL_checkudata(L, idx, "Wave");
+}
+
+static int f_Wave__gc(lua_State *L) {
+    UnloadWave(*check_Wave(L, 1));
+    return 0;
+}
+
+static int f_Wave__tostring(lua_State *L) {
+    const Wave *wave = check_Wave(L, 1);
+    lua_pushfstring(L, "Wave(%p)", wave);
+    return 1;
+}
+
+static int f_Wave_get_frameCount(lua_State *L) {
+     lua_pushinteger(L, check_Wave(L, 1)->frameCount);
+     return 1;
+}
+
+static int f_Wave_get_sampleRate(lua_State *L) {
+     lua_pushinteger(L, check_Wave(L, 1)->sampleRate);
+     return 1;
+}
+
+static int f_Wave_get_sampleSize(lua_State *L) {
+     lua_pushinteger(L, check_Wave(L, 1)->sampleSize);
+     return 1;
+}
+
+static int f_Wave_get_channels(lua_State *L) {
+     lua_pushinteger(L, check_Wave(L, 1)->channels);
+     return 1;
+}
+
+
+//==[[ Sound object ]]===========================================================
+
+static int push_Sound(lua_State *L, const Sound sound) {
+    *((Sound*)push_object(L, "Sound", sizeof(Sound), 0)) = sound;
+    return 1;
+}
+
+static Sound *check_Sound(lua_State *L, const int idx) {
+    return luaL_checkudata(L, idx, "Sound");
+}
+
+static int f_Sound__gc(lua_State *L) {
+    UnloadSound(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_Sound__tostring(lua_State *L) {
+    const Sound *sound = check_Sound(L, 1);
+    lua_pushfstring(L, "Sound(%p)", sound);
+    return 1;
+}
+
+
+//==[[ Music object ]]===========================================================
+
+static int push_Music(lua_State *L, const Music music) {
+    *((Music*)push_object(L, "Music", sizeof(Music), 1)) = music;
+    return 1;
+}
+
+static Music *check_Music(lua_State *L, const int idx) {
+    return luaL_checkudata(L, idx, "Music");
+}
+
+static int f_Music__gc(lua_State *L) {
+    UnloadMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_Music__tostring(lua_State *L) {
+    const Music *music = check_Music(L, 1);
+    lua_pushfstring(L, "Music(%p)", music);
+    return 1;
+}
+
+
 //==[[ FilePathList object ]]===================================================
 
 static int push_FilePathList(lua_State *L, FilePathList list, void (*unload)(FilePathList)) {
@@ -2058,6 +2147,220 @@ static int f_MeasureTextEx(lua_State *L) {
 
 //==[[ module: raudio ]]========================================================
 
+// Audio device management functions -------------------------------------------
+
+static int f_InitAudioDevice(lua_State *L) {
+    (void)L; InitAudioDevice();
+    return 0;
+}
+
+static int f_CloseAudioDevice(lua_State *L) {
+    (void)L; CloseAudioDevice();
+    return 0;
+}
+
+static int f_IsAudioDeviceReady(lua_State *L) {
+     lua_pushboolean(L, IsAudioDeviceReady());
+    return 1;
+}
+
+static int f_SetMasterVolume(lua_State *L) {
+    SetMasterVolume((float)luaL_checknumber(L, 1));
+    return 0;
+}
+
+
+// Wave/Sound loading/unloading functions --------------------------------------
+
+static int f_LoadWave(lua_State *L) {
+    return push_Wave(L, LoadWave(luaL_checkstring(L, 1)));
+}
+
+static int f_LoadWaveFromString(lua_State *L) {
+    size_t length;
+    const char *type = luaL_checkstring(L, 1);
+    const char *data = luaL_checklstring(L, 2, &length);
+    return push_Wave(L, LoadWaveFromMemory(type, (unsigned char*)data, (int)length));
+}
+
+static int f_LoadSound(lua_State *L) {
+    return push_Sound(L, LoadSound(luaL_checkstring(L, 1)));
+}
+
+static int f_LoadSoundFromWave(lua_State *L) {
+    return push_Sound(L, LoadSoundFromWave(*check_Wave(L, 1)));
+}
+
+static int f_UpdateSound(lua_State *L) {
+    return luaL_error(L, "not implemented");
+}
+
+static int f_ExportWave(lua_State *L) {
+     lua_pushboolean(L, ExportWave(*check_Wave(L, 1), luaL_checkstring(L, 2)));
+    return 1;
+}
+
+
+// Wave/Sound management functions ---------------------------------------------
+
+static int f_PlaySound(lua_State *L) {
+    PlaySound(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_StopSound(lua_State *L) {
+    StopSound(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_PauseSound(lua_State *L) {
+    PauseSound(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_ResumeSound(lua_State *L) {
+    ResumeSound(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_PlaySoundMulti(lua_State *L) {
+    PlaySoundMulti(*check_Sound(L, 1));
+    return 0;
+}
+
+static int f_StopSoundMulti(lua_State *L) {
+    (void)L; StopSoundMulti();
+    return 0;
+}
+
+static int f_GetSoundsPlaying(lua_State *L) {
+     lua_pushinteger(L, GetSoundsPlaying());
+     return 1;
+}
+
+static int f_IsSoundPlaying(lua_State *L) {
+     lua_pushboolean(L, IsSoundPlaying(*check_Sound(L, 1)));
+    return 1;
+}
+
+static int f_SetSoundVolume(lua_State *L) {
+    SetSoundVolume(*check_Sound(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_SetSoundPitch(lua_State *L) {
+    SetSoundPitch(*check_Sound(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_SetSoundPan(lua_State *L) {
+    SetSoundPan(*check_Sound(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_WaveCopy(lua_State *L) {
+    return push_Wave(L, WaveCopy(*check_Wave(L, 1)));
+}
+
+static int f_WaveCrop(lua_State *L) {
+    WaveCrop(check_Wave(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int f_WaveFormat(lua_State *L) {
+    WaveFormat(check_Wave(L, 1), luaL_checkinteger(L, 1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int f_LoadWaveSamples(lua_State *L) {
+    const Wave *wave = check_Wave(L, 1);
+    float *samples = LoadWaveSamples(*wave);
+    lua_createtable(L, wave->frameCount, 0);
+    for (unsigned int i = 0; i < wave->frameCount; ++i) {
+        lua_pushnumber(L, samples[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    UnloadWaveSamples(samples);
+    return 1;
+}
+
+
+// Music management functions --------------------------------------------------
+
+static int f_LoadMusicStream(lua_State *L) {
+    return push_Music(L, LoadMusicStream(luaL_checkstring(L, 1)));
+}
+
+static int f_LoadMusicStreamFromString(lua_State *L) {
+    size_t length;
+    const char *type = luaL_checkstring(L, 1);
+    const char *data = luaL_checklstring(L, 2, &length);
+    push_Music(L, LoadMusicStreamFromMemory(type, (const unsigned char*)data, (int)length));
+    lua_pushvalue(L, 2);
+    lua_setiuservalue(L, -2, 1);
+    return 1;
+}
+
+static int f_PlayMusicStream(lua_State *L) {
+    PlayMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_IsMusicStreamPlaying(lua_State *L) {
+     lua_pushboolean(L, IsMusicStreamPlaying(*check_Music(L, 1)));
+    return 1;
+}
+
+static int f_UpdateMusicStream(lua_State *L) {
+    UpdateMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_StopMusicStream(lua_State *L) {
+    StopMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_PauseMusicStream(lua_State *L) {
+    PauseMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_ResumeMusicStream(lua_State *L) {
+    ResumeMusicStream(*check_Music(L, 1));
+    return 0;
+}
+
+static int f_SeekMusicStream(lua_State *L) {
+    SeekMusicStream(*check_Music(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_SetMusicVolume(lua_State *L) {
+    SetMusicVolume(*check_Music(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_SetMusicPitch(lua_State *L) {
+    SetMusicPitch(*check_Music(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_SetMusicPan(lua_State *L) {
+    SetMusicPan(*check_Music(L, 1), (float)luaL_checknumber(L, 2));
+    return 0;
+}
+
+static int f_GetMusicTimeLength(lua_State *L) {
+     lua_pushnumber(L, GetMusicTimeLength(*check_Music(L, 1)));
+     return 1;
+}
+
+static int f_GetMusicTimePlayed(lua_State *L) {
+     lua_pushnumber(L, GetMusicTimePlayed(*check_Music(L, 1)));
+     return 1;
+}
+
 
 //==[[ Lua module definition ]]=================================================
 
@@ -2251,6 +2554,53 @@ static const luaL_Reg Camera2D_meta[] = {
     { "=rotation", f_Camera2D_set_rotation },
     { "?zoom", f_Camera2D_get_zoom },
     { "=zoom", f_Camera2D_set_zoom },
+    { NULL, NULL }
+};
+
+static const luaL_Reg Wave_meta[] = {
+    { "__gc", f_Wave__gc },
+    { "__tostring", f_Wave__tostring },
+    { "Copy", f_WaveCopy },
+    { "Crop", f_WaveCrop },
+    { "Format", f_WaveFormat },
+    { "LoadSamples", f_LoadWaveSamples },
+    { "?frameCount", f_Wave_get_frameCount },
+    { "?sampleRate", f_Wave_get_sampleRate },
+    { "?sampleSize", f_Wave_get_sampleSize },
+    { "?channels", f_Wave_get_channels },
+    { NULL, NULL }
+};
+
+static const luaL_Reg Sound_meta[] = {
+    { "__gc", f_Sound__gc },
+    { "__tostring", f_Sound__tostring },
+    { "Play", f_PlaySound },
+    { "Stop", f_StopSound },
+    { "Pause", f_PauseSound },
+    { "Resume", f_ResumeSound },
+    { "PlayMulti", f_PlaySoundMulti },
+    { "IsPlaying", f_IsSoundPlaying },
+    { "SeVolume", f_SetSoundVolume },
+    { "SePitch", f_SetSoundPitch },
+    { "SePan", f_SetSoundPan },
+    { NULL, NULL }
+};
+
+static const luaL_Reg Music_meta[] = {
+    { "__gc", f_Music__gc },
+    { "__tostring", f_Music__tostring },
+    { "Play", f_PlayMusicStream },
+    { "IsPlaying", f_IsMusicStreamPlaying },
+    { "Update", f_UpdateMusicStream },
+    { "Stop", f_StopMusicStream },
+    { "Pause", f_PauseMusicStream },
+    { "Resume", f_ResumeMusicStream },
+    { "Seek", f_SeekMusicStream },
+    { "SetVolume", f_SetMusicVolume },
+    { "SetPitch", f_SetMusicPitch },
+    { "SetPan", f_SetMusicPan },
+    { "GetTimeLength", f_GetMusicTimeLength },
+    { "GetTimePlayed", f_GetMusicTimePlayed },
     { NULL, NULL }
 };
 
@@ -2518,6 +2868,50 @@ static const luaL_Reg raylib_funcs[] = {
         // Text font info functions --------------------------------------------
         { "MeasureText", f_MeasureText },
         { "MeasureTextEx", f_MeasureTextEx },
+    // module: raudio ----------------------------------------------------------
+        // Audio device management functions -----------------------------------
+        { "InitAudioDevice", f_InitAudioDevice },
+        { "CloseAudioDevice", f_CloseAudioDevice },
+        { "IsAudioDeviceReady", f_IsAudioDeviceReady },
+        { "SetMasterVolume", f_SetMasterVolume },
+        // Wave/Sound loading/unloading functions ------------------------------
+        { "LoadWave", f_LoadWave },
+        { "LoadWaveFromString", f_LoadWaveFromString },
+        { "LoadSound", f_LoadSound },
+        { "LoadSoundFromWave", f_LoadSoundFromWave },
+        { "UpdateSound", f_UpdateSound },
+        { "ExportWave", f_ExportWave },
+        // Wave/Sound management functions -------------------------------------
+        { "PlaySound", f_PlaySound },
+        { "StopSound", f_StopSound },
+        { "PauseSound", f_PauseSound },
+        { "ResumeSound", f_ResumeSound },
+        { "PlaySoundMulti", f_PlaySoundMulti },
+        { "StopSoundMulti", f_StopSoundMulti },
+        { "GetSoundsPlaying", f_GetSoundsPlaying },
+        { "IsSoundPlaying", f_IsSoundPlaying },
+        { "SetSoundVolume", f_SetSoundVolume },
+        { "SetSoundPitch", f_SetSoundPitch },
+        { "SetSoundPan", f_SetSoundPan },
+        { "WaveCopy", f_WaveCopy },
+        { "WaveCrop", f_WaveCrop },
+        { "WaveFormat", f_WaveFormat },
+        { "LoadWaveSamples", f_LoadWaveSamples },
+        // Music management functions ------------------------------------------
+        { "LoadMusicStream", f_LoadMusicStream },
+        { "LoadMusicStreamFromString", f_LoadMusicStreamFromString },
+        { "PlayMusicStream", f_PlayMusicStream },
+        { "IsMusicStreamPlaying", f_IsMusicStreamPlaying },
+        { "UpdateMusicStream", f_UpdateMusicStream },
+        { "StopMusicStream", f_StopMusicStream },
+        { "PauseMusicStream", f_PauseMusicStream },
+        { "ResumeMusicStream", f_ResumeMusicStream },
+        { "SeekMusicStream", f_SeekMusicStream },
+        { "SetMusicVolume", f_SetMusicVolume },
+        { "SetMusicPitch", f_SetMusicPitch },
+        { "SetMusicPan", f_SetMusicPan },
+        { "GetMusicTimeLength", f_GetMusicTimeLength },
+        { "GetMusicTimePlayed", f_GetMusicTimePlayed },
     // sentinel ----------------------------------------------------------------
     { NULL, NULL }
 };
@@ -2723,6 +3117,9 @@ static void InitRayLua(lua_State *L) {
     push_meta(L, "Font", Font_meta);
     push_meta(L, "Camera3D", Camera3D_meta);
     push_meta(L, "Camera2D", Camera2D_meta);
+    push_meta(L, "Wave", Wave_meta);
+    push_meta(L, "Sound", Sound_meta);
+    push_meta(L, "Music", Music_meta);
     // register our functions
     lua_pushglobaltable(L);
     luaL_setfuncs(L, raylib_funcs, 0);
