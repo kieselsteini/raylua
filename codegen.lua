@@ -3,7 +3,8 @@
 local templates = {
     body = 'static int f_%s(lua_State *L) {\n%s\n}\n\n',
     args = {
-        ['int'] = '(int)luaL_checknumber(L, %d)',
+        ['void'] = '',
+        ['int'] = 'luaL_checkinteger(L, %d)',
         ['float'] = '(float)luaL_checknumber(L, %d)',
         ['const char*'] = 'luaL_checkstring(L, %d)',
         ['Vector2'] = '*check_Vector2(L, %d)',
@@ -13,31 +14,35 @@ local templates = {
         ['Image'] = '*check_Image(L, %d)',
         ['Image*'] = 'check_Image(L, %d)',
         ['Font'] = '*check_Font(L, %d)',
+        ['Texture'] = '*check_Texture(L, %d)',
+        ['Texture2D'] = '*check_Texture(L, %d)',
+        ['TextureCubemap'] = '*check_Texture(L, %d)',
+        ['Camera2D'] = '*check_Camera2D(L, %d)',
+        ['Camera3D'] = '*check_Camera3D(L, %d)',
+        ['Wave'] = '*check_Wave(L, %d)',
+        ['Sound'] = '*check_Sound(L, %d)',
+        ['Music'] = '*check_Music(L, %d)',
     },
     returns = {
         ['void'] = '    %s;\n    return 0;',
+        ['bool'] = '     lua_pushboolean(L, %s);\n    return 1;',
+        ['float'] = '     lua_pushnumber(L, %s);\n     return 1;',
+        ['int'] = '     lua_pushinteger(L, %s);\n     return 1;',
+        ['Vector2'] = '    return push_Vector2(L, %s);',
+        ['Vector3'] = '    return push_Vector3(L, %s);',
         ['Image'] = '    return push_Image(L, %s);',
         ['Color'] = '    return push_Color(L, %s);',
-        ['Rectangle'] = '    return push_Rectangle(L, %s);'
-    }
+        ['Texture'] = '    return push_Texture(L, %s);',
+        ['Rectangle'] = '    return push_Rectangle(L, %s);',
+        ['Wave'] = '    return push_Wave(L, %s);',
+        ['Sound'] = '    return push_Sound(L, %s);',
+        ['Music'] = '    return push_Music(L, %s);',
+    },
+    getter = 'static int f_%s_get_%s(lua_State *L) {\n%s\n}\n\n',
+    setter = 'static int f_%s_set_%s(lua_State *L) {\n%s\n}\n\n',
 }
 
-local tmp_code = [[
-RLAPI void ImageClearBackground(Image *dst, Color color);                                                // Clear image background with given color
-RLAPI void ImageDrawPixel(Image *dst, int posX, int posY, Color color);                                  // Draw pixel within an image
-RLAPI void ImageDrawPixelV(Image *dst, Vector2 position, Color color);                                   // Draw pixel within an image (Vector version)
-RLAPI void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color); // Draw line within an image
-RLAPI void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color);                          // Draw line within an image (Vector version)
-RLAPI void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color);               // Draw circle within an image
-RLAPI void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color);                        // Draw circle within an image (Vector version)
-RLAPI void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color);       // Draw rectangle within an image
-RLAPI void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color);                 // Draw rectangle within an image (Vector version)
-RLAPI void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color);                                // Draw rectangle within an image
-RLAPI void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color);                   // Draw rectangle lines within an image
-RLAPI void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint);             // Draw a source image within a destination image (tint applied to source)
-RLAPI void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color);   // Draw text (using default font) within an image (destination)
-RLAPI void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint); // Draw text (custom sprite font) within an image (destination)
-]]
+local tmp_code = [[ ]]
 
 function load_raylib()
     local fp <close> = assert(io.open('raylib.h', 'rb'))
@@ -78,6 +83,8 @@ function parse_code()
     local c_code = {}
     local c_defs = {}
     local raylib = tmp_code --load_raylib()
+
+    -- parse C function definitions
     for line in string.gmatch(raylib, '[^\r\n]+') do
         local code, def = parse_function(line)
         if code and def then
@@ -85,6 +92,19 @@ function parse_code()
             c_defs[#c_defs + 1] = def
         end
     end
+
+    -- parse structs
+    for name, struct in string.gmatch(raylib, 'typedef struct (%w+) {([^}]+)}') do
+        for field_type, field_name in string.gmatch(struct, '(%w+) (%w+);') do
+            local getter = string.format(templates.returns[field_type], string.format('check_%s(L, 1)->%s', name, field_name))
+            --local setter = string.format('    check_%s(L, 1)->%s = %s;\n    return 0;', name, field_name, string.format(templates.args[field_type], 2))
+            c_code[#c_code + 1] = string.format(templates.getter, name, field_name, getter)
+            --c_code[#c_code + 1] = string.format(templates.setter, name, field_name, setter)
+            c_defs[#c_defs + 1] = string.format('    { "?%s", f_%s_get_%s },', field_name, name, field_name)
+            --c_defs[#c_defs + 1] = string.format('    { "=%s", f_%s_set_%s },', field_name, name, field_name)
+        end
+    end
+
     print(table.concat(c_code))
     print()
     print(table.concat(c_defs, '\n'))
