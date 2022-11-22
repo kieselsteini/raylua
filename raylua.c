@@ -473,6 +473,7 @@ static Rectangle *check_Rectangle(lua_State *L, const int idx) {
 
 static int f_Rectangle(lua_State *L) {
     switch (lua_gettop(L)) {
+        case 0: return push_Rectangle(L, (Rectangle){0});
         case 1: return push_Rectangle(L, *check_Rectangle(L, 1));
         case 4: return push_Rectangle(L, (Rectangle){
                     .x = (float)luaL_checknumber(L, 1), .y = (float)luaL_checknumber(L, 2),
@@ -718,7 +719,7 @@ static int f_Camera3D_set_projection(lua_State *L) {
 //==[[ Camera2D object ]]=======================================================
 
 static int push_Camera2D(lua_State *L, const Camera2D camera) {
-    *((Camera2D*)push_object(L, "Camera3D", sizeof(Camera2D), 0)) = camera;
+    *((Camera2D*)push_object(L, "Camera2D", sizeof(Camera2D), 0)) = camera;
     return 1;
 }
 
