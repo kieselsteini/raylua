@@ -7,7 +7,24 @@ Well most Lua bindings I have found on GitHub were using the LuaJIT "ffi" packag
 
 Last but not least, fun. I just discovered raylib and I enjoy Lua programming, so I thought I would be a perfect side-project for me (and the upcoming raylib game jam).
 
-## State
+## Difference to programming raylib in C99
+
+- there are no **UnloadXXX** functions as the Lua garbage collector will collect and finalize unused resources
+- all **LoadXXXFromMemory** functions are renamed to **LoadXXXFromString** which allows the user to pass a Lua byte string
+- all **GetXXXWidth** / **GetXXXHeight** functions are renamed to **GetXXXSize** which will return 2 values for width and height
+- all "basic" objects like **Vector2**, **Vector3** etc. have a function named like this to create them
+    - e.g. ```Vector2()```, ```Vector3()```, ```Rectangle()```, ```Camera2D()```, ```Camera3D()```
+    - or with parameters like ```Vector2(1, 2)```, ```Vector2(other_vector)```
+- all objects with resources bound to them like **Image**, **Texture** use the corresponding raylib function to create them
+- vector objects **Vector2**, **Vector3** take advantage of metatables so you can write simpler code
+    - you can add a vector with a vector or a number etc.
+    - e.g. ```vector = Vector2(10, 10) * 100```
+- all functions which take an object as its first parameter are exposed as methods on the object itself
+    - e.g. ```ImageColorInvert(image)``` can be written as ```image:ColorInvert()```
+    - e.g. ```DrawTextureV(texture, Vector2(10, 10), WHITE)``` can be written as ```texture:DrawV(Vector(10, 10), WHITE)```
+- functions returning a **FilePathList** return a simple Lua array with strings instead
+
+## State of the binding
 
 - module: **rcore** 🚧
     - Window-related functions ✅ (100%)
